@@ -8,6 +8,7 @@ import About from './components/About';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
+import Timeline from './components/Timeline';
 import Footer from './components/Footer';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -20,6 +21,7 @@ function App() {
         <Hero />
         <About />
         <Skills />
+        <Timeline />
         <Projects />
         <Contact />
       </main>

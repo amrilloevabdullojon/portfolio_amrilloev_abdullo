@@ -65,6 +65,49 @@ export const skills = [
   },
 ];
 
+export const timeline = [
+  {
+    id: 1,
+    type: 'work',
+    period: '2023 — Present',
+    title: 'Full Stack Developer',
+    company: 'Freelance / Remote',
+    description:
+      'Building full-stack web applications for clients worldwide. Specialising in React frontends, Node.js backends, and PostgreSQL databases.',
+    skills: ['React', 'Node.js', 'PostgreSQL', 'Docker'],
+  },
+  {
+    id: 2,
+    type: 'education',
+    period: '2021 — 2025',
+    title: 'Bachelor of Computer Science',
+    company: 'Tashkent University of Information Technologies',
+    description:
+      'Studying software engineering, algorithms, data structures, and modern web technologies. Active participant in coding competitions.',
+    skills: ['Algorithms', 'OOP', 'Databases', 'Networks'],
+  },
+  {
+    id: 3,
+    type: 'work',
+    period: '2022 — 2023',
+    title: 'Junior Frontend Developer',
+    company: 'IT Company, Tashkent',
+    description:
+      'Developed responsive UI components and integrated REST APIs. Improved page load performance by 40% through code splitting and lazy loading.',
+    skills: ['React', 'TypeScript', 'Tailwind CSS', 'REST API'],
+  },
+  {
+    id: 4,
+    type: 'education',
+    period: '2021',
+    title: 'Web Development Bootcamp',
+    company: 'Self-taught / Online Courses',
+    description:
+      'Completed intensive courses in HTML, CSS, JavaScript, and React. Built 10+ projects ranging from landing pages to full-stack apps.',
+    skills: ['HTML', 'CSS', 'JavaScript', 'React'],
+  },
+];
+
 export const projects = [
   {
     id: 1,

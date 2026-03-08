@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { personalInfo } from '../data/portfolio';
+import Toast from './Toast';
 
 const socialLinks = [
   {
@@ -18,7 +19,7 @@ const socialLinks = [
     label: 'LinkedIn',
     href: personalInfo.linkedin,
     color: '#0077b5',
-    description: 'Let\'s connect',
+    description: "Let's connect",
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
         <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
@@ -50,18 +51,101 @@ const socialLinks = [
   },
 ];
 
+function validate(data) {
+  const errors = {};
+  if (!data.name.trim() || data.name.trim().length < 2) {
+    errors.name = 'Name must be at least 2 characters';
+  }
+  if (!data.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+    errors.email = 'Enter a valid email address';
+  }
+  if (!data.message.trim() || data.message.trim().length < 10) {
+    errors.message = 'Message must be at least 10 characters';
+  }
+  return errors;
+}
+
 export default function Contact() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
-  const [sent, setSent] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [touched, setTouched] = useState({});
+  const [sending, setSending] = useState(false);
+  const [toast, setToast] = useState({ visible: false, message: '', type: 'success' });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 3000);
-    setFormData({ name: '', email: '', message: '' });
+  const showToast = (message, type = 'success') => {
+    setToast({ visible: true, message, type });
+    setTimeout(() => setToast((t) => ({ ...t, visible: false })), 3500);
   };
+
+  const handleBlur = (field) => {
+    setTouched((t) => ({ ...t, [field]: true }));
+    const errs = validate(formData);
+    setErrors(errs);
+  };
+
+  const handleChange = (field, value) => {
+    const next = { ...formData, [field]: value };
+    setFormData(next);
+    if (touched[field]) {
+      setErrors(validate(next));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const allTouched = { name: true, email: true, message: true };
+    setTouched(allTouched);
+    const errs = validate(formData);
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
+    setSending(true);
+    try {
+      // EmailJS integration — fill in your credentials in .env
+      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+      if (serviceId && templateId && publicKey) {
+        const { default: emailjs } = await import('@emailjs/browser');
+        await emailjs.send(
+          serviceId,
+          templateId,
+          {
+            from_name: formData.name,
+            from_email: formData.email,
+            message: formData.message,
+          },
+          publicKey
+        );
+      }
+
+      showToast('Message sent successfully!', 'success');
+      setFormData({ name: '', email: '', message: '' });
+      setTouched({});
+      setErrors({});
+    } catch {
+      showToast('Something went wrong. Try again.', 'error');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const inputStyle = (field) => ({
+    width: '100%',
+    padding: '12px 16px',
+    background: 'rgba(255,255,255,0.04)',
+    border: `1px solid ${touched[field] && errors[field] ? 'rgba(239,68,68,0.6)' : 'rgba(255,255,255,0.1)'}`,
+    borderRadius: '10px',
+    color: 'white',
+    fontSize: '0.9rem',
+    outline: 'none',
+    transition: 'border-color 0.2s ease',
+    boxSizing: 'border-box',
+    fontFamily: 'inherit',
+  });
 
   return (
     <section
@@ -99,14 +183,7 @@ export default function Contact() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7 }}
           >
-            <h3
-              style={{
-                color: 'white',
-                fontSize: '1.3rem',
-                fontWeight: 700,
-                marginBottom: '8px',
-              }}
-            >
+            <h3 style={{ color: 'white', fontSize: '1.3rem', fontWeight: 700, marginBottom: '8px' }}>
               Let&apos;s Connect
             </h3>
             <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '28px', lineHeight: 1.6 }}>
@@ -124,11 +201,7 @@ export default function Contact() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.5, delay: 0.1 + idx * 0.08 }}
-                  whileHover={{
-                    scale: 1.04,
-                    boxShadow: `0 0 24px ${link.color}44`,
-                    borderColor: `${link.color}66`,
-                  }}
+                  whileHover={{ scale: 1.04, boxShadow: `0 0 24px ${link.color}44`, borderColor: `${link.color}66` }}
                   className="glass-card"
                   style={{
                     padding: '20px 16px',
@@ -143,12 +216,8 @@ export default function Contact() {
                 >
                   <div style={{ color: link.color }}>{link.icon}</div>
                   <div>
-                    <div style={{ color: 'white', fontWeight: 600, fontSize: '0.9rem' }}>
-                      {link.label}
-                    </div>
-                    <div style={{ color: '#64748b', fontSize: '0.75rem', marginTop: '2px' }}>
-                      {link.description}
-                    </div>
+                    <div style={{ color: 'white', fontWeight: 600, fontSize: '0.9rem' }}>{link.label}</div>
+                    <div style={{ color: '#64748b', fontSize: '0.75rem', marginTop: '2px' }}>{link.description}</div>
                   </div>
                 </motion.a>
               ))}
@@ -160,25 +229,14 @@ export default function Contact() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: 0.5 }}
               className="glass-card"
-              style={{
-                marginTop: '20px',
-                padding: '18px 20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-              }}
+              style={{ marginTop: '20px', padding: '18px 20px', display: 'flex', alignItems: 'center', gap: '12px' }}
             >
               <div
                 style={{
-                  width: '36px',
-                  height: '36px',
-                  borderRadius: '8px',
-                  background: 'rgba(99,102,241,0.15)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  color: '#6366f1',
-                  flexShrink: 0,
+                  width: '36px', height: '36px', borderRadius: '8px',
+                  background: 'rgba(99,102,241,0.15)', display: 'flex',
+                  alignItems: 'center', justifyContent: 'center',
+                  color: '#6366f1', flexShrink: 0,
                 }}
               >
                 @
@@ -203,73 +261,84 @@ export default function Contact() {
             className="glass-card"
             style={{ padding: '36px' }}
           >
-            <h3
-              style={{
-                color: 'white',
-                fontSize: '1.2rem',
-                fontWeight: 700,
-                marginBottom: '24px',
-              }}
-            >
+            <h3 style={{ color: 'white', fontSize: '1.2rem', fontWeight: 700, marginBottom: '24px' }}>
               Send a Message
             </h3>
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} noValidate>
+              {/* Name */}
               <div>
                 <label style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
                   Your Name
                 </label>
                 <input
                   type="text"
-                  className="form-input"
+                  style={inputStyle('name')}
                   placeholder="John Doe"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  required
+                  onChange={(e) => handleChange('name', e.target.value)}
+                  onBlur={() => handleBlur('name')}
+                  onFocus={(e) => { e.target.style.borderColor = 'rgba(99,102,241,0.5)'; }}
                 />
+                {touched.name && errors.name && (
+                  <p style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '4px' }}>{errors.name}</p>
+                )}
               </div>
 
+              {/* Email */}
               <div>
                 <label style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
                   Email Address
                 </label>
                 <input
                   type="email"
-                  className="form-input"
+                  style={inputStyle('email')}
                   placeholder="john@example.com"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  required
+                  onChange={(e) => handleChange('email', e.target.value)}
+                  onBlur={() => handleBlur('email')}
+                  onFocus={(e) => { e.target.style.borderColor = 'rgba(99,102,241,0.5)'; }}
                 />
+                {touched.email && errors.email && (
+                  <p style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '4px' }}>{errors.email}</p>
+                )}
               </div>
 
+              {/* Message */}
               <div>
                 <label style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
                   Message
                 </label>
                 <textarea
-                  className="form-input"
+                  style={{ ...inputStyle('message'), resize: 'vertical', minHeight: '120px' }}
                   placeholder="Tell me about your project..."
                   rows={5}
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                  required
+                  onChange={(e) => handleChange('message', e.target.value)}
+                  onBlur={() => handleBlur('message')}
+                  onFocus={(e) => { e.target.style.borderColor = 'rgba(99,102,241,0.5)'; }}
                 />
+                {touched.message && errors.message && (
+                  <p style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '4px' }}>{errors.message}</p>
+                )}
               </div>
 
               <motion.button
                 type="submit"
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
+                disabled={sending}
+                whileHover={{ scale: sending ? 1 : 1.03 }}
+                whileTap={{ scale: sending ? 1 : 0.97 }}
                 className="btn-primary"
-                style={{ justifyContent: 'center', marginTop: '8px' }}
+                style={{ justifyContent: 'center', marginTop: '8px', opacity: sending ? 0.7 : 1 }}
               >
-                {sent ? '✓ Message Sent!' : 'Send Message →'}
+                {sending ? 'Sending…' : 'Send Message →'}
               </motion.button>
             </form>
           </motion.div>
         </div>
       </div>
+
+      <Toast message={toast.message} type={toast.type} visible={toast.visible} />
     </section>
   );
 }

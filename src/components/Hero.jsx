@@ -148,9 +148,9 @@ export default function Hero() {
         overflow: 'hidden',
       }}
     >
-      {/* Particle Background */}
+      {/* Particle Background — reduced on mobile for performance */}
       <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-        <ParticleCanvas count={70} />
+        <ParticleCanvas count={window.innerWidth < 768 ? 30 : 70} />
       </div>
 
       {/* Floating Blobs */}
@@ -332,6 +332,41 @@ export default function Hero() {
           >
             Contact Me
           </motion.button>
+          <motion.a
+            href="/assets/cv.pdf"
+            download
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 28px',
+              borderRadius: '12px',
+              border: '1px solid rgba(255,255,255,0.12)',
+              color: '#94a3b8',
+              textDecoration: 'none',
+              fontSize: '0.95rem',
+              fontWeight: 600,
+              transition: 'all 0.2s ease',
+              background: 'rgba(255,255,255,0.04)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(99,102,241,0.5)';
+              e.currentTarget.style.color = '#a5b4fc';
+              e.currentTarget.style.background = 'rgba(99,102,241,0.08)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)';
+              e.currentTarget.style.color = '#94a3b8';
+              e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+            }}
+          >
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
+            </svg>
+            Download CV
+          </motion.a>
         </motion.div>
 
         {/* Social Links */}
