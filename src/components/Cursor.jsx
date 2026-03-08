@@ -67,6 +67,9 @@ export default function Cursor() {
 
   return (
     <>
+      <style>{`
+        *, *::before, *::after { cursor: none !important; }
+      `}</style>
       {/* Small sharp dot */}
       <div
         ref={dotRef}
