@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
-import Particles, { initParticlesEngine } from '@tsparticles/react';
-import { loadSlim } from '@tsparticles/slim';
+import { FiGithub, FiLinkedin, FiSend } from 'react-icons/fi';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import ParticleCanvas from './ParticleCanvas';
 import { personalInfo } from '../data/portfolio';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -40,42 +40,6 @@ function useTypewriter(words, speed = 110, pauseMs = 1800) {
   return text;
 }
 
-const particleOptions = {
-  background: { color: { value: 'transparent' } },
-  fpsLimit: 60,
-  interactivity: {
-    events: {
-      onHover: { enable: true, mode: 'repulse' },
-    },
-    modes: {
-      repulse: { distance: 80, duration: 0.4 },
-    },
-  },
-  particles: {
-    color: { value: ['#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd'] },
-    links: {
-      enable: true,
-      color: '#6366f1',
-      opacity: 0.15,
-      distance: 140,
-      width: 1,
-    },
-    move: {
-      enable: true,
-      speed: 0.6,
-      outModes: { default: 'bounce' },
-      random: true,
-    },
-    number: {
-      value: 70,
-      density: { enable: true, area: 900 },
-    },
-    opacity: { value: { min: 0.2, max: 0.5 } },
-    size: { value: { min: 1, max: 2.5 } },
-  },
-  detectRetina: true,
-};
-
 const containerVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.15, delayChildren: 0.3 } },
@@ -86,8 +50,13 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } },
 };
 
+const socialLinks = [
+  { label: 'GitHub', icon: <FiGithub size={16} />, href: personalInfo.github },
+  { label: 'LinkedIn', icon: <FiLinkedin size={16} />, href: personalInfo.linkedin },
+  { label: 'Telegram', icon: <FiSend size={16} />, href: personalInfo.telegram },
+];
+
 export default function Hero() {
-  const [engineReady, setEngineReady] = useState(false);
   const typeText = useTypewriter(personalInfo.taglines);
   const blob1Ref = useRef(null);
   const blob2Ref = useRef(null);
@@ -95,18 +64,37 @@ export default function Hero() {
   const sectionRef = useRef(null);
 
   useEffect(() => {
-    initParticlesEngine(async (engine) => {
-      await loadSlim(engine);
-    }).then(() => setEngineReady(true));
-  }, []);
-
-  useEffect(() => {
     if (!sectionRef.current) return;
-    const triggers = [];
-
-    triggers.push(
+    const ctx = gsap.context(() => {
+      // Continuous idle float for each blob
       gsap.to(blob1Ref.current, {
-        y: -180,
+        y: '+=22',
+        x: '+=10',
+        duration: 4.2,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+      gsap.to(blob2Ref.current, {
+        y: '+=16',
+        x: '-=13',
+        duration: 5.1,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+      gsap.to(blob3Ref.current, {
+        y: '+=28',
+        x: '+=9',
+        duration: 3.7,
+        repeat: -1,
+        yoyo: true,
+        ease: 'sine.inOut',
+      });
+
+      // Scroll parallax
+      gsap.to(blob1Ref.current, {
+        y: '-=180',
         ease: 'none',
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -114,12 +102,10 @@ export default function Hero() {
           end: 'bottom top',
           scrub: 1.5,
         },
-      }).scrollTrigger
-    );
-    triggers.push(
+      });
       gsap.to(blob2Ref.current, {
-        y: -100,
-        x: 40,
+        y: '-=100',
+        x: '+=40',
         ease: 'none',
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -127,12 +113,10 @@ export default function Hero() {
           end: 'bottom top',
           scrub: 2.5,
         },
-      }).scrollTrigger
-    );
-    triggers.push(
+      });
       gsap.to(blob3Ref.current, {
-        y: -60,
-        x: -30,
+        y: '-=60',
+        x: '-=30',
         ease: 'none',
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -140,10 +124,10 @@ export default function Hero() {
           end: 'bottom top',
           scrub: 1,
         },
-      }).scrollTrigger
-    );
+      });
+    }, sectionRef);
 
-    return () => triggers.forEach((t) => t && t.kill());
+    return () => ctx.revert();
   }, []);
 
   const handleNavClick = (href) => {
@@ -164,12 +148,10 @@ export default function Hero() {
         overflow: 'hidden',
       }}
     >
-      {/* Particles */}
-      {engineReady && (
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-          <Particles id="tsparticles" options={particleOptions} style={{ width: '100%', height: '100%' }} />
-        </div>
-      )}
+      {/* Particle Background */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
+        <ParticleCanvas count={70} />
+      </div>
 
       {/* Floating Blobs */}
       <div
@@ -355,20 +337,20 @@ export default function Hero() {
         {/* Social Links */}
         <motion.div
           variants={itemVariants}
-          style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginBottom: '60px' }}
+          style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '60px' }}
         >
-          {[
-            { label: 'GitHub', href: personalInfo.github, icon: 'GH' },
-            { label: 'LinkedIn', href: personalInfo.linkedin, icon: 'LI' },
-            { label: 'Telegram', href: personalInfo.telegram, icon: 'TG' },
-          ].map((s) => (
+          {socialLinks.map((s) => (
             <motion.a
               key={s.label}
               href={s.href}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -3, scale: 1.1 }}
+              title={s.label}
               style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
                 padding: '8px 16px',
                 borderRadius: '8px',
                 background: 'rgba(255,255,255,0.05)',
@@ -392,6 +374,7 @@ export default function Hero() {
               }}
             >
               {s.icon}
+              <span>{s.label}</span>
             </motion.a>
           ))}
         </motion.div>
