@@ -1,0 +1,213 @@
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const navLinks = [
+  { label: 'Home', href: '#hero' },
+  { label: 'About', href: '#about' },
+  { label: 'Skills', href: '#skills' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Contact', href: '#contact' },
+];
+
+export default function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 50);
+    window.addEventListener('scroll', handler);
+    return () => window.removeEventListener('scroll', handler);
+  }, []);
+
+  const handleNavClick = (e, href) => {
+    e.preventDefault();
+    setMenuOpen(false);
+    const el = document.querySelector(href);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  return (
+    <motion.nav
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        zIndex: 1000,
+        padding: scrolled ? '12px 32px' : '20px 32px',
+        background: scrolled ? 'rgba(10,10,15,0.85)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        WebkitBackdropFilter: scrolled ? 'blur(20px)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : 'none',
+        boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.3)' : 'none',
+        transition: 'all 0.4s ease',
+      }}
+    >
+      <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        {/* Logo */}
+        <a
+          href="#hero"
+          onClick={(e) => handleNavClick(e, '#hero')}
+          style={{ textDecoration: 'none' }}
+        >
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            style={{
+              fontFamily: '"JetBrains Mono", monospace',
+              fontWeight: 600,
+              fontSize: '1.25rem',
+              background: 'linear-gradient(135deg, #6366f1, #a78bfa)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}
+          >
+            {'<AA />'}
+          </motion.div>
+        </a>
+
+        {/* Desktop Links */}
+        <div
+          style={{
+            display: 'flex',
+            gap: '8px',
+            alignItems: 'center',
+          }}
+          className="desktop-nav"
+        >
+          {navLinks.map((link) => (
+            <motion.a
+              key={link.label}
+              href={link.href}
+              onClick={(e) => handleNavClick(e, link.href)}
+              whileHover={{ y: -2 }}
+              style={{
+                padding: '8px 16px',
+                borderRadius: '8px',
+                color: '#94a3b8',
+                textDecoration: 'none',
+                fontSize: '0.9rem',
+                fontWeight: 500,
+                transition: 'color 0.2s ease, background 0.2s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.color = '#a5b4fc';
+                e.target.style.background = 'rgba(99,102,241,0.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.color = '#94a3b8';
+                e.target.style.background = 'transparent';
+              }}
+            >
+              {link.label}
+            </motion.a>
+          ))}
+          <motion.a
+            href="#contact"
+            onClick={(e) => handleNavClick(e, '#contact')}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.97 }}
+            className="btn-primary"
+            style={{ padding: '8px 22px', fontSize: '0.875rem', marginLeft: '8px' }}
+          >
+            Hire Me
+          </motion.a>
+        </div>
+
+        {/* Mobile Hamburger */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          style={{
+            background: 'none',
+            border: '1px solid rgba(255,255,255,0.1)',
+            borderRadius: '8px',
+            padding: '8px',
+            cursor: 'pointer',
+            color: '#94a3b8',
+            display: 'none',
+          }}
+          className="mobile-menu-btn"
+          aria-label="Toggle menu"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            {menuOpen ? (
+              <path d="M18 6L6 18M6 6l12 12" />
+            ) : (
+              <>
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </>
+            )}
+          </svg>
+        </button>
+      </div>
+
+      {/* Mobile Menu */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            style={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              right: 0,
+              background: 'rgba(10,10,15,0.95)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              borderBottom: '1px solid rgba(255,255,255,0.08)',
+              padding: '16px 32px 24px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px',
+            }}
+          >
+            {navLinks.map((link, i) => (
+              <motion.a
+                key={link.label}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.05 }}
+                style={{
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  color: '#94a3b8',
+                  textDecoration: 'none',
+                  fontSize: '1rem',
+                  fontWeight: 500,
+                  transition: 'color 0.2s, background 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.color = '#a5b4fc';
+                  e.target.style.background = 'rgba(99,102,241,0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.color = '#94a3b8';
+                  e.target.style.background = 'transparent';
+                }}
+              >
+                {link.label}
+              </motion.a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .desktop-nav { display: none !important; }
+          .mobile-menu-btn { display: flex !important; }
+        }
+      `}</style>
+    </motion.nav>
+  );
+}
