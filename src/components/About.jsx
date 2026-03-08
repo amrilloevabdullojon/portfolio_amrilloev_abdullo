@@ -1,5 +1,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
+import { personalInfo } from '../data/portfolio';
+import { useLang } from '../context/LangContext';
 
 function useCounter(target, active, duration = 1200) {
   const [count, setCount] = useState(0);
@@ -18,7 +20,6 @@ function useCounter(target, active, duration = 1200) {
   }, [active, target, duration]);
   return count;
 }
-import { personalInfo } from '../data/portfolio';
 
 const fadeLeft = {
   hidden: { opacity: 0, x: -60 },
@@ -197,6 +198,40 @@ export default function About() {
                 <StatCard key={stat.label} stat={stat} isInView={isInView} />
               ))}
             </div>
+
+            {/* GitHub Stats */}
+            <motion.a
+              href={personalInfo.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              style={{
+                display: 'block',
+                width: '100%',
+                maxWidth: '340px',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                border: '1px solid rgba(99,102,241,0.2)',
+                textDecoration: 'none',
+                transition: 'border-color 0.3s ease, box-shadow 0.3s ease',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(99,102,241,0.5)';
+                e.currentTarget.style.boxShadow = '0 0 20px rgba(99,102,241,0.2)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(99,102,241,0.2)';
+                e.currentTarget.style.boxShadow = 'none';
+              }}
+            >
+              <img
+                src={`https://github-readme-stats.vercel.app/api?username=amrilloevabdullojon&show_icons=true&theme=tokyonight&bg_color=0d0d18&border_color=6366f100&title_color=a78bfa&icon_color=6366f1&text_color=94a3b8&hide_border=true`}
+                alt="GitHub Stats"
+                style={{ width: '100%', display: 'block' }}
+              />
+            </motion.a>
           </motion.div>
 
           {/* Right — Text */}

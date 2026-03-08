@@ -1,5 +1,6 @@
-import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useRef, useState, useMemo } from 'react';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { useLang } from '../context/LangContext';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination, Navigation, EffectCoverflow } from 'swiper/modules';
 import 'swiper/css';
@@ -8,7 +9,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/effect-coverflow';
 import { projects } from '../data/portfolio';
 
-function ProjectCard({ project }) {
+function ProjectCard({ project, tComingSoon = '🔒 Coming Soon' }) {
   const cardRef = useRef(null);
 
   const handleMouseMove = (e) => {
@@ -150,7 +151,7 @@ function ProjectCard({ project }) {
                 fontFamily: '"JetBrains Mono", monospace',
               }}
             >
-              🔒 Coming Soon
+              {tComingSoon}
             </span>
           )}
         </div>
@@ -162,6 +163,21 @@ function ProjectCard({ project }) {
 export default function Projects() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const [activeFilter, setActiveFilter] = useState('All');
+  const { t } = useLang();
+
+  const allTechs = useMemo(() => {
+    const set = new Set();
+    projects.forEach((p) => p.tech.forEach((t) => set.add(t)));
+    return [t.projects.filter_all, ...Array.from(set)];
+  }, [t]);
+
+  const filtered = useMemo(() =>
+    activeFilter === t.projects.filter_all
+      ? projects
+      : projects.filter((p) => p.tech.includes(activeFilter)),
+    [activeFilter, t]
+  );
 
   return (
     <section id="projects" className="section-padding" ref={ref}>
@@ -173,11 +189,41 @@ export default function Projects() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2>My Projects</h2>
+          <h2>{t.projects.title}</h2>
           <div className="title-line" />
           <p style={{ color: '#64748b', marginTop: '12px', fontSize: '0.95rem' }}>
-            A selection of things I&apos;ve built
+            {t.projects.subtitle}
           </p>
+        </motion.div>
+
+        {/* Filter Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '32px' }}
+        >
+          {allTechs.map((tech) => (
+            <motion.button
+              key={tech}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setActiveFilter(tech)}
+              style={{
+                padding: '6px 16px',
+                borderRadius: '50px',
+                border: `1px solid ${activeFilter === tech ? 'rgba(99,102,241,0.7)' : 'rgba(255,255,255,0.1)'}`,
+                background: activeFilter === tech ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)',
+                color: activeFilter === tech ? '#a5b4fc' : '#64748b',
+                fontSize: '0.8rem',
+                fontFamily: '"JetBrains Mono", monospace',
+                fontWeight: 600,
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {tech}
+            </motion.button>
+          ))}
         </motion.div>
 
         {/* Swiper */}
@@ -187,6 +233,7 @@ export default function Projects() {
           transition={{ duration: 0.8, delay: 0.2 }}
         >
           <Swiper
+            key={activeFilter}
             modules={[Autoplay, Pagination, Navigation, EffectCoverflow]}
             effect="coverflow"
             grabCursor={true}
@@ -209,12 +256,12 @@ export default function Projects() {
             loop={true}
             style={{ paddingBottom: '50px', paddingTop: '20px' }}
           >
-            {projects.map((project) => (
+            {(filtered.length ? filtered : projects).map((project) => (
               <SwiperSlide
                 key={project.id}
                 style={{ width: '360px', height: 'auto' }}
               >
-                <ProjectCard project={project} />
+                <ProjectCard project={project} tComingSoon={t.projects.coming_soon} />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -235,7 +282,7 @@ export default function Projects() {
             whileTap={{ scale: 0.97 }}
             className="btn-outline"
           >
-            View All on GitHub →
+            {t.projects.view_all}
           </motion.a>
         </motion.div>
       </div>

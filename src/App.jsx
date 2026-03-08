@@ -9,6 +9,7 @@ import Skills from './components/Skills';
 import Projects from './components/Projects';
 import Contact from './components/Contact';
 import Timeline from './components/Timeline';
+import Testimonials from './components/Testimonials';
 import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 import ScrollToTop from './components/ScrollToTop';
@@ -29,7 +30,8 @@ function App() {
           <Skills />
           <Timeline />
           <Projects />
-          <Contact />
+          <Testimonials />
+        <Contact />
         </main>
         <Footer />
         <ScrollToTop />

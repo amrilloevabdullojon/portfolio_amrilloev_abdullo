@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLang } from '../context/LangContext';
 
-const navLinks = [
-  { label: 'Home', href: '#hero' },
-  { label: 'About', href: '#about' },
-  { label: 'Skills', href: '#skills' },
-  { label: 'Timeline', href: '#timeline' },
-  { label: 'Projects', href: '#projects' },
-  { label: 'Contact', href: '#contact' },
+const navKeys = ['home', 'about', 'skills', 'timeline', 'projects', 'contact'];
+const navHrefs = ['#hero', '#about', '#skills', '#timeline', '#projects', '#contact'];
+
+const LANGS = [
+  { code: 'en', label: 'EN' },
+  { code: 'ru', label: 'RU' },
+  { code: 'uz', label: 'UZ' },
 ];
 
 export default function Navbar() {
@@ -15,6 +16,9 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const [activeSection, setActiveSection] = useState('hero');
+  const { lang, switchLang, t } = useLang();
+
+  const navLinks = navKeys.map((key, i) => ({ label: t.nav[key], href: navHrefs[i] }));
 
   useEffect(() => {
     const handler = () => {
@@ -149,6 +153,29 @@ export default function Navbar() {
               </motion.a>
             );
           })}
+          {/* Language Switcher */}
+          <div style={{ display: 'flex', gap: '2px', marginLeft: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '3px', border: '1px solid rgba(255,255,255,0.08)' }}>
+            {LANGS.map(({ code, label }) => (
+              <button
+                key={code}
+                onClick={() => switchLang(code)}
+                style={{
+                  padding: '4px 10px',
+                  borderRadius: '6px',
+                  border: 'none',
+                  background: lang === code ? 'rgba(99,102,241,0.3)' : 'transparent',
+                  color: lang === code ? '#a5b4fc' : '#64748b',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  fontFamily: '"JetBrains Mono", monospace',
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
           <motion.a
             href="#contact"
             onClick={(e) => handleNavClick(e, '#contact')}
@@ -157,7 +184,7 @@ export default function Navbar() {
             className="btn-primary"
             style={{ padding: '8px 22px', fontSize: '0.875rem', marginLeft: '8px' }}
           >
-            Hire Me
+            {t.nav.hire}
           </motion.a>
         </div>
 

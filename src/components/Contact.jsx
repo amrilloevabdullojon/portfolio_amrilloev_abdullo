@@ -2,6 +2,7 @@ import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { personalInfo } from '../data/portfolio';
 import Toast from './Toast';
+import { useLang } from '../context/LangContext';
 
 const socialLinks = [
   {
@@ -73,6 +74,15 @@ export default function Contact() {
   const [touched, setTouched] = useState({});
   const [sending, setSending] = useState(false);
   const [toast, setToast] = useState({ visible: false, message: '', type: 'success' });
+  const [copied, setCopied] = useState(false);
+  const { t } = useLang();
+
+  const copyEmail = () => {
+    navigator.clipboard.writeText(personalInfo.email).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
 
   const showToast = (message, type = 'success') => {
     setToast({ visible: true, message, type });
@@ -162,10 +172,10 @@ export default function Contact() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2>Get In Touch</h2>
+          <h2>{t.contact.title}</h2>
           <div className="title-line" />
           <p style={{ color: '#64748b', marginTop: '12px', fontSize: '0.95rem' }}>
-            Have a project in mind? Let&apos;s talk.
+            {t.contact.subtitle}
           </p>
         </motion.div>
 
@@ -184,11 +194,10 @@ export default function Contact() {
             transition={{ duration: 0.7 }}
           >
             <h3 style={{ color: 'white', fontSize: '1.3rem', fontWeight: 700, marginBottom: '8px' }}>
-              Let&apos;s Connect
+              {t.contact.connect}
             </h3>
             <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '28px', lineHeight: 1.6 }}>
-              I&apos;m always open to new opportunities and interesting conversations.
-              Feel free to reach out through any of these channels.
+              {t.contact.connect_sub}
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
@@ -241,7 +250,7 @@ export default function Contact() {
               >
                 @
               </div>
-              <div>
+              <div style={{ flex: 1 }}>
                 <div style={{ color: '#64748b', fontSize: '0.75rem', marginBottom: '2px' }}>Email</div>
                 <a
                   href={`mailto:${personalInfo.email}`}
@@ -250,6 +259,21 @@ export default function Contact() {
                   {personalInfo.email}
                 </a>
               </div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={copyEmail}
+                style={{
+                  padding: '6px 12px', borderRadius: '7px', border: '1px solid rgba(99,102,241,0.3)',
+                  background: copied ? 'rgba(16,185,129,0.12)' : 'rgba(99,102,241,0.1)',
+                  color: copied ? '#34d399' : '#a5b4fc',
+                  fontSize: '0.72rem', fontWeight: 700,
+                  fontFamily: '"JetBrains Mono", monospace',
+                  flexShrink: 0, transition: 'all 0.2s ease',
+                }}
+              >
+                {copied ? t.contact.copied : t.contact.copy}
+              </motion.button>
             </motion.div>
           </motion.div>
 
@@ -262,14 +286,14 @@ export default function Contact() {
             style={{ padding: '36px' }}
           >
             <h3 style={{ color: 'white', fontSize: '1.2rem', fontWeight: 700, marginBottom: '24px' }}>
-              Send a Message
+              {t.contact.form_title}
             </h3>
 
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} noValidate>
               {/* Name */}
               <div>
                 <label style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
-                  Your Name
+                  {t.contact.name}
                 </label>
                 <input
                   type="text"
@@ -288,7 +312,7 @@ export default function Contact() {
               {/* Email */}
               <div>
                 <label style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
-                  Email Address
+                  {t.contact.email}
                 </label>
                 <input
                   type="email"
@@ -304,10 +328,10 @@ export default function Contact() {
                 )}
               </div>
 
-              {/* Message */}
+              {/* {t.contact.message} */}
               <div>
                 <label style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
-                  Message
+                  {t.contact.message}
                 </label>
                 <textarea
                   style={{ ...inputStyle('message'), resize: 'vertical', minHeight: '120px' }}
@@ -331,7 +355,7 @@ export default function Contact() {
                 className="btn-primary"
                 style={{ justifyContent: 'center', marginTop: '8px', opacity: sending ? 0.7 : 1 }}
               >
-                {sending ? 'Sending…' : 'Send Message →'}
+                {sending ? t.contact.sending : t.contact.send}
               </motion.button>
             </form>
           </motion.div>

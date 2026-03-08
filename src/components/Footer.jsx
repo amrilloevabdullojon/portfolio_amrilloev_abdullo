@@ -1,7 +1,9 @@
 import { personalInfo } from '../data/portfolio';
+import { useLang } from '../context/LangContext';
 
 export default function Footer() {
   const year = new Date().getFullYear();
+  const { t } = useLang();
 
   const handleNavClick = (href) => {
     const el = document.querySelector(href);
@@ -35,7 +37,7 @@ export default function Footer() {
 
         {/* Nav links */}
         <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', justifyContent: 'center' }}>
-          {['#hero', '#about', '#skills', '#projects', '#contact'].map((href) => (
+          {['#hero', '#about', '#skills', '#timeline', '#projects', '#contact'].map((href) => (
             <button
               key={href}
               onClick={() => handleNavClick(href)}
@@ -86,7 +88,7 @@ export default function Footer() {
 
         {/* Copyright */}
         <p style={{ color: '#334155', fontSize: '0.78rem' }}>
-          © {year} {personalInfo.name}. Built with React + Vite.
+          © {year} {personalInfo.name}. {t.footer.built}
         </p>
       </div>
     </footer>

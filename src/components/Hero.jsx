@@ -5,6 +5,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ParticleCanvas from './ParticleCanvas';
 import { personalInfo } from '../data/portfolio';
+import { useLang } from '../context/LangContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -57,6 +58,7 @@ const socialLinks = [
 ];
 
 export default function Hero() {
+  const { t } = useLang();
   const typeText = useTypewriter(personalInfo.taglines);
   const blob1Ref = useRef(null);
   const blob2Ref = useRef(null);
@@ -200,7 +202,7 @@ export default function Hero() {
         }}
       />
 
-      {/* Content */}
+      {/* Content — two-column on desktop */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -208,12 +210,19 @@ export default function Hero() {
         style={{
           position: 'relative',
           zIndex: 10,
-          textAlign: 'center',
-          padding: '0 24px',
-          maxWidth: '860px',
+          padding: '0 32px',
+          maxWidth: '1100px',
           margin: '0 auto',
+          width: '100%',
+          display: 'grid',
+          gridTemplateColumns: 'minmax(0,1fr) auto',
+          gap: '60px',
+          alignItems: 'center',
         }}
+        className="hero-grid"
       >
+        {/* Left — Text content */}
+        <div>
         {/* Available badge */}
         <motion.div variants={itemVariants}>
           <span
@@ -243,7 +252,7 @@ export default function Hero() {
                 animation: 'pulse 2s infinite',
               }}
             />
-            Available for work
+            {t.hero.available}
           </span>
         </motion.div>
 
@@ -258,7 +267,7 @@ export default function Hero() {
             letterSpacing: '0.05em',
           }}
         >
-          Hello, I&apos;m
+          {t.hero.greeting}
         </motion.p>
 
         {/* Name */}
@@ -304,8 +313,8 @@ export default function Hero() {
             color: '#94a3b8',
             fontSize: 'clamp(0.95rem, 2vw, 1.1rem)',
             lineHeight: 1.7,
-            maxWidth: '600px',
-            margin: '0 auto 40px',
+            maxWidth: '540px',
+            margin: '0 0 40px',
           }}
         >
           {personalInfo.bioShort}
@@ -314,7 +323,7 @@ export default function Hero() {
         {/* CTA Buttons */}
         <motion.div
           variants={itemVariants}
-          style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '60px' }}
+          style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start', flexWrap: 'wrap', marginBottom: '48px' }}
         >
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -322,7 +331,7 @@ export default function Hero() {
             className="btn-primary"
             onClick={() => handleNavClick('#projects')}
           >
-            View Projects →
+            {t.hero.cta_projects}
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.05 }}
@@ -330,7 +339,7 @@ export default function Hero() {
             className="btn-outline"
             onClick={() => handleNavClick('#contact')}
           >
-            Contact Me
+            {t.hero.cta_contact}
           </motion.button>
           <motion.a
             href="/assets/cv.pdf"
@@ -365,14 +374,14 @@ export default function Hero() {
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
             </svg>
-            Download CV
+            {t.hero.cta_cv}
           </motion.a>
         </motion.div>
 
         {/* Social Links */}
         <motion.div
           variants={itemVariants}
-          style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '60px' }}
+          style={{ display: 'flex', gap: '12px', justifyContent: 'flex-start', flexWrap: 'wrap', marginBottom: '0' }}
         >
           {socialLinks.map((s) => (
             <motion.a
@@ -413,7 +422,67 @@ export default function Hero() {
             </motion.a>
           ))}
         </motion.div>
+        </div>{/* end left col */}
+
+        {/* Right — Avatar */}
+        <motion.div
+          variants={itemVariants}
+          className="hero-avatar-col"
+          style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+        >
+          <div style={{ position: 'relative' }}>
+            {/* Outer glow ring */}
+            <div style={{
+              position: 'absolute', inset: '-12px', borderRadius: '50%',
+              background: 'conic-gradient(from 0deg, #6366f1, #8b5cf6, #a78bfa, #6366f1)',
+              opacity: 0.25, filter: 'blur(16px)', animation: 'spin 8s linear infinite',
+            }} />
+            <div style={{
+              width: '280px', height: '280px', borderRadius: '50%', overflow: 'hidden',
+              border: '3px solid rgba(99,102,241,0.5)',
+              boxShadow: '0 0 50px rgba(99,102,241,0.4), 0 0 100px rgba(139,92,246,0.2)',
+              position: 'relative', zIndex: 1,
+            }}>
+              <img
+                src="/assets/avatar.jpg"
+                alt="PANDA FIST"
+                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
+              />
+            </div>
+            {/* GitHub stats badge */}
+            <motion.a
+              href={personalInfo.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 1.2, type: 'spring' }}
+              style={{
+                position: 'absolute', bottom: '10px', right: '-20px',
+                background: 'rgba(10,10,15,0.9)', backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(99,102,241,0.3)', borderRadius: '12px',
+                padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '8px',
+                textDecoration: 'none', color: 'white', fontSize: '0.78rem', fontWeight: 600,
+                boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="#6366f1">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
+              </svg>
+              <span style={{ color: '#a5b4fc' }}>Open to Work</span>
+            </motion.a>
+          </div>
+        </motion.div>
+
       </motion.div>
+
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @media (max-width: 768px) {
+          .hero-grid { grid-template-columns: 1fr !important; text-align: center; }
+          .hero-avatar-col { display: none !important; }
+        }
+      `}</style>
 
       {/* Scroll Indicator */}
       <motion.div
