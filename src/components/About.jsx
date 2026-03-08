@@ -1,5 +1,23 @@
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
+
+function useCounter(target, active, duration = 1200) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    const num = parseInt(target, 10);
+    if (isNaN(num)) return;
+    let start = 0;
+    const step = Math.ceil(num / (duration / 16));
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= num) { setCount(num); clearInterval(timer); }
+      else setCount(start);
+    }, 16);
+    return () => clearInterval(timer);
+  }, [active, target, duration]);
+  return count;
+}
 import { personalInfo } from '../data/portfolio';
 
 const fadeLeft = {
@@ -28,6 +46,32 @@ const traits = [
   { icon: '🤝', label: 'Team collaboration & communication' },
   { icon: '📚', label: 'Continuous learning mindset' },
 ];
+
+function StatCard({ stat, isInView }) {
+  const suffix = stat.value.replace(/[0-9]/g, '');
+  const count = useCounter(stat.value, isInView);
+  return (
+    <motion.div
+      whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(99,102,241,0.3)' }}
+      className="glass-card"
+      style={{ padding: '16px 8px', textAlign: 'center', cursor: 'default', transition: 'box-shadow 0.3s ease' }}
+    >
+      <div
+        style={{
+          fontSize: '1.5rem',
+          fontWeight: 800,
+          background: 'linear-gradient(135deg, #6366f1, #a78bfa)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          backgroundClip: 'text',
+        }}
+      >
+        {count}{suffix}
+      </div>
+      <div style={{ color: '#64748b', fontSize: '0.7rem', marginTop: '4px' }}>{stat.label}</div>
+    </motion.div>
+  );
+}
 
 export default function About() {
   const ref = useRef(null);
@@ -150,31 +194,7 @@ export default function About() {
               }}
             >
               {personalInfo.stats.map((stat) => (
-                <motion.div
-                  key={stat.label}
-                  whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(99,102,241,0.3)' }}
-                  className="glass-card"
-                  style={{
-                    padding: '16px 8px',
-                    textAlign: 'center',
-                    cursor: 'default',
-                    transition: 'box-shadow 0.3s ease',
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: '1.5rem',
-                      fontWeight: 800,
-                      background: 'linear-gradient(135deg, #6366f1, #a78bfa)',
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      backgroundClip: 'text',
-                    }}
-                  >
-                    {stat.value}
-                  </div>
-                  <div style={{ color: '#64748b', fontSize: '0.7rem', marginTop: '4px' }}>{stat.label}</div>
-                </motion.div>
+                <StatCard key={stat.label} stat={stat} isInView={isInView} />
               ))}
             </div>
           </motion.div>

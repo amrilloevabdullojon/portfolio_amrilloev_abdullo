@@ -14,6 +14,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
     const handler = () => {
@@ -23,6 +24,27 @@ export default function Navbar() {
     };
     window.addEventListener('scroll', handler, { passive: true });
     return () => window.removeEventListener('scroll', handler);
+  }, []);
+
+  // Track active section via IntersectionObserver
+  useEffect(() => {
+    const sectionIds = navLinks.map((l) => l.href.slice(1));
+    const observers = [];
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveSection(id);
+        },
+        { threshold: 0.35 }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
   }, []);
 
   const handleNavClick = (e, href) => {
@@ -54,11 +76,7 @@ export default function Navbar() {
     >
       <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Logo */}
-        <a
-          href="#hero"
-          onClick={(e) => handleNavClick(e, '#hero')}
-          style={{ textDecoration: 'none' }}
-        >
+        <a href="#hero" onClick={(e) => handleNavClick(e, '#hero')} style={{ textDecoration: 'none' }}>
           <motion.div
             whileHover={{ scale: 1.05 }}
             style={{
@@ -76,41 +94,61 @@ export default function Navbar() {
         </a>
 
         {/* Desktop Links */}
-        <div
-          style={{
-            display: 'flex',
-            gap: '8px',
-            alignItems: 'center',
-          }}
-          className="desktop-nav"
-        >
-          {navLinks.map((link) => (
-            <motion.a
-              key={link.label}
-              href={link.href}
-              onClick={(e) => handleNavClick(e, link.href)}
-              whileHover={{ y: -2 }}
-              style={{
-                padding: '8px 16px',
-                borderRadius: '8px',
-                color: '#94a3b8',
-                textDecoration: 'none',
-                fontSize: '0.9rem',
-                fontWeight: 500,
-                transition: 'color 0.2s ease, background 0.2s ease',
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.color = '#a5b4fc';
-                e.target.style.background = 'rgba(99,102,241,0.1)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.color = '#94a3b8';
-                e.target.style.background = 'transparent';
-              }}
-            >
-              {link.label}
-            </motion.a>
-          ))}
+        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }} className="desktop-nav">
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.href.slice(1);
+            return (
+              <motion.a
+                key={link.label}
+                href={link.href}
+                onClick={(e) => handleNavClick(e, link.href)}
+                whileHover={{ y: -2 }}
+                style={{
+                  position: 'relative',
+                  padding: '8px 16px',
+                  borderRadius: '8px',
+                  color: isActive ? '#a5b4fc' : '#94a3b8',
+                  textDecoration: 'none',
+                  fontSize: '0.9rem',
+                  fontWeight: isActive ? 600 : 500,
+                  background: isActive ? 'rgba(99,102,241,0.1)' : 'transparent',
+                  transition: 'color 0.2s ease, background 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = '#a5b4fc';
+                    e.currentTarget.style.background = 'rgba(99,102,241,0.07)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.currentTarget.style.color = '#94a3b8';
+                    e.currentTarget.style.background = 'transparent';
+                  }
+                }}
+              >
+                {link.label}
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-indicator"
+                    style={{
+                      position: 'absolute',
+                      bottom: '4px',
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      width: '4px',
+                      height: '4px',
+                      borderRadius: '50%',
+                      background: '#6366f1',
+                      display: 'block',
+                      boxShadow: '0 0 6px rgba(99,102,241,0.8)',
+                    }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  />
+                )}
+              </motion.a>
+            );
+          })}
           <motion.a
             href="#contact"
             onClick={(e) => handleNavClick(e, '#contact')}
@@ -165,7 +203,7 @@ export default function Navbar() {
               top: '100%',
               left: 0,
               right: 0,
-              background: 'rgba(10,10,15,0.95)',
+              background: 'rgba(10,10,15,0.97)',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
               borderBottom: '1px solid rgba(255,255,255,0.08)',
@@ -175,35 +213,37 @@ export default function Navbar() {
               gap: '4px',
             }}
           >
-            {navLinks.map((link, i) => (
-              <motion.a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => handleNavClick(e, link.href)}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05 }}
-                style={{
-                  padding: '12px 16px',
-                  borderRadius: '8px',
-                  color: '#94a3b8',
-                  textDecoration: 'none',
-                  fontSize: '1rem',
-                  fontWeight: 500,
-                  transition: 'color 0.2s, background 0.2s',
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.color = '#a5b4fc';
-                  e.target.style.background = 'rgba(99,102,241,0.1)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.color = '#94a3b8';
-                  e.target.style.background = 'transparent';
-                }}
-              >
-                {link.label}
-              </motion.a>
-            ))}
+            {navLinks.map((link, i) => {
+              const isActive = activeSection === link.href.slice(1);
+              return (
+                <motion.a
+                  key={link.label}
+                  href={link.href}
+                  onClick={(e) => handleNavClick(e, link.href)}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.05 }}
+                  style={{
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    color: isActive ? '#a5b4fc' : '#94a3b8',
+                    textDecoration: 'none',
+                    fontSize: '1rem',
+                    fontWeight: isActive ? 600 : 500,
+                    background: isActive ? 'rgba(99,102,241,0.1)' : 'transparent',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'color 0.2s, background 0.2s',
+                  }}
+                >
+                  {isActive && (
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#6366f1', flexShrink: 0 }} />
+                  )}
+                  {link.label}
+                </motion.a>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>
