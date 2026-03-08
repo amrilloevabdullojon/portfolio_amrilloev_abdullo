@@ -93,25 +93,23 @@ export default function About() {
                 }}
               />
 
-              {/* Avatar Circle */}
+              {/* Avatar Image */}
               <div
                 style={{
-                  width: '140px',
-                  height: '140px',
+                  width: '160px',
+                  height: '160px',
                   borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: '3rem',
-                  fontWeight: 700,
-                  color: 'white',
-                  boxShadow: '0 0 40px rgba(99,102,241,0.4)',
-                  border: '3px solid rgba(255,255,255,0.15)',
-                  fontFamily: '"Inter", sans-serif',
+                  overflow: 'hidden',
+                  border: '3px solid rgba(99,102,241,0.45)',
+                  boxShadow: '0 0 40px rgba(99,102,241,0.35), 0 0 80px rgba(139,92,246,0.15)',
+                  flexShrink: 0,
                 }}
               >
-                AA
+                <img
+                  src="/assets/avatar.jpg"
+                  alt="Amrilloev Abdullo"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
+                />
               </div>
 
               <div style={{ textAlign: 'center' }}>
