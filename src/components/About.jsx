@@ -151,7 +151,7 @@ export default function About() {
               >
                 <img
                   src="/assets/avatar.jpg"
-                  alt="Amrilloev Abdullo"
+                  alt="PANDA FIST"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
                 />
               </div>

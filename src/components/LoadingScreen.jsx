@@ -42,7 +42,7 @@ export default function LoadingScreen() {
               backgroundClip: 'text',
             }}
           >
-            {'<AA />'}
+            {'<PF />'}
           </motion.div>
 
           {/* Progress bar */}

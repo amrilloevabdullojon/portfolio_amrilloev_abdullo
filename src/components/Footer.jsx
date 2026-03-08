@@ -30,7 +30,7 @@ export default function Footer() {
             backgroundClip: 'text',
           }}
         >
-          {'<AA />'}
+          {'<PF />'}
         </div>
 
         {/* Nav links */}

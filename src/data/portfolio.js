@@ -1,5 +1,5 @@
 export const personalInfo = {
-  name: 'Amrilloev Abdullo',
+  name: 'PANDA FIST',
   title: 'Full Stack Developer',
   taglines: [
     'Full Stack Developer',

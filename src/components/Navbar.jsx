@@ -89,7 +89,7 @@ export default function Navbar() {
               backgroundClip: 'text',
             }}
           >
-            {'<AA />'}
+            {'<PF />'}
           </motion.div>
         </a>
 
