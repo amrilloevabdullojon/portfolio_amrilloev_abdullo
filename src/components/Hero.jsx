@@ -129,7 +129,12 @@ export default function Hero() {
       });
     }, sectionRef);
 
-    return () => ctx.revert();
+    return () => {
+      ctx.revert();
+      ScrollTrigger.getAll()
+        .filter((st) => st.trigger === sectionRef.current)
+        .forEach((st) => st.kill());
+    };
   }, []);
 
   const handleNavClick = (href) => {

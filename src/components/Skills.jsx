@@ -205,8 +205,8 @@ export default function Skills() {
               <p style={{ color: '#64748b', fontSize: '0.8rem', fontFamily: '"JetBrains Mono", monospace', marginBottom: '8px' }}>
                 // skill radar
               </p>
-              {isInView && (
-                <ResponsiveContainer width="100%" height={260}>
+              <ResponsiveContainer width="100%" height={260}>
+                {isInView ? (
                   <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                     <PolarGrid stroke="rgba(255,255,255,0.08)" />
                     <PolarAngleAxis
@@ -233,8 +233,8 @@ export default function Skills() {
                       }}
                     />
                   </RadarChart>
-                </ResponsiveContainer>
-              )}
+                ) : <g />}
+              </ResponsiveContainer>
             </motion.div>
           </div>
         </div>

@@ -69,6 +69,7 @@ function validate(data) {
 export default function Contact() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const progressIntervalRef = useRef(null);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
@@ -77,6 +78,13 @@ export default function Contact() {
   const [toast, setToast] = useState({ visible: false, message: '', type: 'success' });
   const [copied, setCopied] = useState(false);
   const { t } = useLang();
+
+  // Cleanup interval on unmount
+  useEffect(() => {
+    return () => {
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    };
+  }, []);
 
   const copyEmail = () => {
     navigator.clipboard.writeText(personalInfo.email).then(() => {
@@ -114,9 +122,14 @@ export default function Contact() {
 
     setSending(true);
     setProgress(0);
-    const progressInterval = setInterval(() => {
+    if (progressIntervalRef.current) clearInterval(progressIntervalRef.current);
+    progressIntervalRef.current = setInterval(() => {
       setProgress((p) => {
-        if (p >= 90) { clearInterval(progressInterval); return 90; }
+        if (p >= 90) {
+          clearInterval(progressIntervalRef.current);
+          progressIntervalRef.current = null;
+          return 90;
+        }
         return p + Math.random() * 12;
       });
     }, 200);
@@ -147,6 +160,10 @@ export default function Contact() {
     } catch {
       showToast('Something went wrong. Try again.', 'error');
     } finally {
+      if (progressIntervalRef.current) {
+        clearInterval(progressIntervalRef.current);
+        progressIntervalRef.current = null;
+      }
       setProgress(100);
       setTimeout(() => { setSending(false); setProgress(0); }, 400);
     }

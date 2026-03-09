@@ -33,8 +33,9 @@ export default function Navbar() {
   }, []);
 
   // Track active section via IntersectionObserver
+  // Use navHrefs (module-level constant) to avoid stale closure on lang switch
   useEffect(() => {
-    const sectionIds = navLinks.map((l) => l.href.slice(1));
+    const sectionIds = navHrefs.map((h) => h.slice(1));
     const observers = [];
 
     sectionIds.forEach((id) => {

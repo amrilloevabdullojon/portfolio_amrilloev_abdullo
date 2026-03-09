@@ -162,24 +162,29 @@ function ProjectCard({ project, tComingSoon = '🔒 Coming Soon' }) {
   );
 }
 
+// Tech list is static — compute once outside component
+const TECH_LIST = (() => {
+  const set = new Set();
+  projects.forEach((p) => p.tech.forEach((tech) => set.add(tech)));
+  return Array.from(set);
+})();
+
 export default function Projects() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
-  const [activeFilter, setActiveFilter] = useState('All');
   const { t } = useLang();
+  // Internal filter state uses tech string directly (not translated "All")
+  const [techFilter, setTechFilter] = useState(null); // null = show all
 
-  const allTechs = useMemo(() => {
-    const set = new Set();
-    projects.forEach((p) => p.tech.forEach((t) => set.add(t)));
-    return [t.projects.filter_all, ...Array.from(set)];
-  }, [t]);
+  const allTechs = useMemo(() => [t.projects.filter_all, ...TECH_LIST], [t.projects.filter_all]);
 
   const filtered = useMemo(() =>
-    activeFilter === t.projects.filter_all
-      ? projects
-      : projects.filter((p) => p.tech.includes(activeFilter)),
-    [activeFilter, t]
+    techFilter === null ? projects : projects.filter((p) => p.tech.includes(techFilter)),
+    [techFilter]
   );
+
+  // activeFilter for button highlight
+  const activeFilter = techFilter === null ? t.projects.filter_all : techFilter;
 
   return (
     <section id="projects" className="section-padding" ref={ref}>
@@ -210,7 +215,7 @@ export default function Projects() {
               key={tech}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => setActiveFilter(tech)}
+              onClick={() => setTechFilter(tech === t.projects.filter_all ? null : tech)}
               style={{
                 padding: '6px 16px',
                 borderRadius: '50px',
@@ -249,7 +254,7 @@ export default function Projects() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                onClick={() => setActiveFilter(t.projects.filter_all)}
+                onClick={() => setTechFilter(null)}
                 style={{
                   marginTop: '16px', padding: '8px 20px', borderRadius: '50px',
                   border: '1px solid rgba(99,102,241,0.4)', background: 'rgba(99,102,241,0.1)',
