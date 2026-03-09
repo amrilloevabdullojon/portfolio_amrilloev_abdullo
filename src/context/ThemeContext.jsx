@@ -2,22 +2,46 @@ import { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext(null);
 
+function applyTheme(next) {
+  document.documentElement.classList.toggle('light', next === 'light');
+  document.documentElement.classList.toggle('dark', next === 'dark');
+  localStorage.setItem('theme', next);
+}
+
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
     const stored = localStorage.getItem('theme') || 'dark';
-    // Apply immediately (before first paint) to avoid flash of wrong theme
-    document.documentElement.classList.toggle('light', stored === 'light');
-    document.documentElement.classList.toggle('dark', stored === 'dark');
+    applyTheme(stored);
     return stored;
   });
 
   useEffect(() => {
-    document.documentElement.classList.toggle('light', theme === 'light');
-    document.documentElement.classList.toggle('dark', theme === 'dark');
-    localStorage.setItem('theme', theme);
+    applyTheme(theme);
   }, [theme]);
 
-  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
+  // toggleTheme accepts optional (x, y) click coordinates for clip-path reveal
+  const toggleTheme = (x, y) => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+
+    if (!document.startViewTransition || x == null || y == null) {
+      setTheme(next);
+      return;
+    }
+
+    const radius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+    const root = document.documentElement;
+    root.style.setProperty('--theme-x', `${x}px`);
+    root.style.setProperty('--theme-y', `${y}px`);
+    root.style.setProperty('--theme-radius', `${Math.ceil(radius)}px`);
+
+    document.startViewTransition(() => {
+      applyTheme(next);
+      setTheme(next);
+    });
+  };
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
