@@ -1,6 +1,10 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useLang } from '../context/LangContext';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
 
 const testimonials = [
   {
@@ -39,10 +43,44 @@ function Stars({ count }) {
   );
 }
 
+function TestimonialCard({ item }) {
+  return (
+    <div
+      className="glass-card"
+      style={{ padding: '28px', display: 'flex', flexDirection: 'column', height: '100%' }}
+    >
+      <div style={{ fontSize: '2.5rem', lineHeight: 1, color: 'rgba(99,102,241,0.3)', fontFamily: 'serif', marginBottom: '8px' }}>"</div>
+      <Stars count={item.rating} />
+      <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.75, flex: 1, marginBottom: '20px' }}>{item.text}</p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+        <div style={{
+          width: '42px', height: '42px', borderRadius: '50%',
+          background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.25)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: '1.3rem', flexShrink: 0,
+        }}>{item.avatar}</div>
+        <div>
+          <div style={{ color: 'white', fontWeight: 600, fontSize: '0.9rem' }}>{item.name}</div>
+          <div style={{ color: '#6366f1', fontSize: '0.75rem', marginTop: '2px' }}>{item.role}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Testimonials() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const { t } = useLang();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    setIsMobile(mq.matches);
+    const handler = (e) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   return (
     <section id="testimonials" className="section-padding" ref={ref}
@@ -62,50 +100,42 @@ export default function Testimonials() {
           </p>
         </motion.div>
 
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-          gap: '24px',
-        }}>
-          {testimonials.map((item, i) => (
-            <motion.div
-              key={item.id}
-              className="glass-card"
-              initial={{ opacity: 0, y: 40 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: i * 0.12 }}
-              whileHover={{ y: -6, boxShadow: '0 0 30px rgba(99,102,241,0.2)' }}
-              style={{ padding: '28px', display: 'flex', flexDirection: 'column', gap: '0' }}
-            >
-              {/* Quote mark */}
-              <div style={{ fontSize: '2.5rem', lineHeight: 1, color: 'rgba(99,102,241,0.3)', fontFamily: 'serif', marginBottom: '8px' }}>
-                "
-              </div>
-
-              <Stars count={item.rating} />
-
-              <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.75, flex: 1, marginBottom: '20px' }}>
-                {item.text}
-              </p>
-
-              {/* Author */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{
-                  width: '42px', height: '42px', borderRadius: '50%',
-                  background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.25)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '1.3rem', flexShrink: 0,
-                }}>
-                  {item.avatar}
-                </div>
-                <div>
-                  <div style={{ color: 'white', fontWeight: 600, fontSize: '0.9rem' }}>{item.name}</div>
-                  <div style={{ color: '#6366f1', fontSize: '0.75rem', marginTop: '2px' }}>{item.role}</div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </div>
+        {isMobile ? (
+          /* Mobile: Swiper carousel */
+          <Swiper
+            modules={[Autoplay, Pagination]}
+            slidesPerView={1}
+            spaceBetween={16}
+            pagination={{ clickable: true }}
+            autoplay={{ delay: 4000, pauseOnMouseEnter: true, disableOnInteraction: false }}
+            style={{ paddingBottom: '40px' }}
+          >
+            {testimonials.map((item) => (
+              <SwiperSlide key={item.id}>
+                <TestimonialCard item={item} />
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        ) : (
+          /* Desktop: grid */
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '24px',
+          }}>
+            {testimonials.map((item, i) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 40 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: i * 0.12 }}
+                whileHover={{ y: -6, boxShadow: '0 0 30px rgba(99,102,241,0.2)' }}
+              >
+                <TestimonialCard item={item} />
+              </motion.div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

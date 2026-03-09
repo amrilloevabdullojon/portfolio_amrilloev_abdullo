@@ -33,11 +33,52 @@ body {
 
 /* ── Design Tokens ───────────────────────────────── */
 :root {
+  /* Glass */
   --glass-bg: rgba(255, 255, 255, 0.05);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-border-hover: rgba(99, 102, 241, 0.4);
   --neon-glow: 0 0 20px rgba(99, 102, 241, 0.4);
   --neon-glow-lg: 0 0 40px rgba(99, 102, 241, 0.6);
+  /* Colors */
+  --color-accent: #6366f1;
+  --color-accent-rgb: 99, 102, 241;
+  --color-purple: #8b5cf6;
+  --color-purple-light: #a78bfa;
+  --color-indigo-light: #a5b4fc;
+  --color-text-muted: #64748b;
+  --color-text-secondary: #94a3b8;
+  --color-bg: #0a0a0f;
+  --color-bg-card: rgba(255,255,255,0.05);
+  --color-text: #e2e8f0;
+}
+
+/* ── Light Theme Overrides ───────────────────────── */
+html.light {
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(99, 102, 241, 0.15);
+  --glass-border-hover: rgba(99, 102, 241, 0.5);
+  --neon-glow: 0 0 20px rgba(99, 102, 241, 0.2);
+  --neon-glow-lg: 0 0 40px rgba(99, 102, 241, 0.35);
+  --color-bg: #f1f5fb;
+  --color-bg-card: rgba(255,255,255,0.8);
+  --color-text: #1e293b;
+  --color-text-muted: #64748b;
+  --color-text-secondary: #475569;
+}
+
+html.light body {
+  background-color: #f1f5fb;
+  color: #1e293b;
+}
+
+html.light .glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(99, 102, 241, 0.15);
+  backdrop-filter: blur(20px);
+}
+
+html.light h1, html.light h2, html.light h3 {
+  color: #1e293b;
 }
 
 /* ── Utility Classes ─────────────────────────────── */

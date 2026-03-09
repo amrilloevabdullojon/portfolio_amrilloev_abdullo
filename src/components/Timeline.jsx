@@ -1,6 +1,7 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { timeline } from '../data/portfolio';
+import { useLang } from '../context/LangContext';
 
 function TimelineItem({ item, index, isInView }) {
   const isLeft = index % 2 === 0;
@@ -16,7 +17,6 @@ function TimelineItem({ item, index, isInView }) {
       }}
       className="timeline-item"
     >
-      {/* Dot on the center line */}
       <div
         style={{
           position: 'absolute',
@@ -44,10 +44,8 @@ function TimelineItem({ item, index, isInView }) {
           width: '100%',
           marginLeft: isLeft ? 0 : '24px',
           marginRight: isLeft ? '24px' : 0,
-          position: 'relative',
         }}
       >
-        {/* Type badge */}
         <span
           style={{
             display: 'inline-block',
@@ -59,9 +57,7 @@ function TimelineItem({ item, index, isInView }) {
             letterSpacing: '0.05em',
             textTransform: 'uppercase',
             marginBottom: '10px',
-            background: item.type === 'work'
-              ? 'rgba(99,102,241,0.15)'
-              : 'rgba(139,92,246,0.15)',
+            background: item.type === 'work' ? 'rgba(99,102,241,0.15)' : 'rgba(139,92,246,0.15)',
             border: `1px solid ${item.type === 'work' ? 'rgba(99,102,241,0.35)' : 'rgba(139,92,246,0.35)'}`,
             color: item.type === 'work' ? '#a5b4fc' : '#c4b5fd',
           }}
@@ -110,6 +106,18 @@ function TimelineItem({ item, index, isInView }) {
 export default function Timeline() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const [filter, setFilter] = useState('all');
+  const { t } = useLang();
+
+  const filterTabs = [
+    { key: 'all', label: t.timeline.filter_all },
+    { key: 'work', label: t.timeline.filter_work },
+    { key: 'education', label: t.timeline.filter_edu },
+  ];
+
+  const visible = filter === 'all'
+    ? timeline
+    : timeline.filter((item) => item.type === filter);
 
   return (
     <section id="timeline" className="section-padding" ref={ref}>
@@ -120,16 +128,45 @@ export default function Timeline() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2>Experience & Education</h2>
+          <h2>{t.timeline.title}</h2>
           <div className="title-line" />
           <p style={{ color: '#64748b', marginTop: '12px', fontSize: '0.95rem' }}>
-            My journey so far
+            {t.timeline.subtitle}
           </p>
         </motion.div>
 
-        {/* Timeline wrapper */}
+        {/* Filter tabs */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginBottom: '40px' }}
+        >
+          {filterTabs.map(({ key, label }) => (
+            <motion.button
+              key={key}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => setFilter(key)}
+              style={{
+                padding: '7px 20px',
+                borderRadius: '50px',
+                border: `1px solid ${filter === key ? 'rgba(99,102,241,0.7)' : 'rgba(255,255,255,0.1)'}`,
+                background: filter === key ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)',
+                color: filter === key ? '#a5b4fc' : '#64748b',
+                fontSize: '0.82rem',
+                fontFamily: '"JetBrains Mono", monospace',
+                fontWeight: 600,
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {label}
+            </motion.button>
+          ))}
+        </motion.div>
+
+        {/* Timeline */}
         <div style={{ position: 'relative' }}>
-          {/* Center vertical line */}
           <motion.div
             initial={{ scaleY: 0 }}
             animate={isInView ? { scaleY: 1 } : {}}
@@ -146,9 +183,15 @@ export default function Timeline() {
             }}
           />
 
-          {timeline.map((item, i) => (
+          {visible.map((item, i) => (
             <TimelineItem key={item.id} item={item} index={i} isInView={isInView} />
           ))}
+
+          {visible.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '60px 20px', color: '#64748b', fontFamily: '"JetBrains Mono", monospace', fontSize: '0.9rem' }}>
+              No items for this filter.
+            </div>
+          )}
         </div>
       </div>
 

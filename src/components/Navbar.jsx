@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLang } from '../context/LangContext';
+import { useTheme } from '../context/ThemeContext';
 
 const navKeys = ['home', 'about', 'skills', 'timeline', 'projects', 'contact'];
 const navHrefs = ['#hero', '#about', '#skills', '#timeline', '#projects', '#contact'];
@@ -17,6 +18,7 @@ export default function Navbar() {
   const [progress, setProgress] = useState(0);
   const [activeSection, setActiveSection] = useState('hero');
   const { lang, switchLang, t } = useLang();
+  const { theme, toggleTheme } = useTheme();
 
   const navLinks = navKeys.map((key, i) => ({ label: t.nav[key], href: navHrefs[i] }));
 
@@ -106,6 +108,8 @@ export default function Navbar() {
                 key={link.label}
                 href={link.href}
                 onClick={(e) => handleNavClick(e, link.href)}
+                aria-current={isActive ? 'page' : undefined}
+                aria-label={link.label}
                 whileHover={{ y: -2 }}
                 style={{
                   position: 'relative',
@@ -176,6 +180,23 @@ export default function Navbar() {
             ))}
           </div>
 
+          {/* Theme Toggle */}
+          <motion.button
+            whileHover={{ scale: 1.1, rotate: 15 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={toggleTheme}
+            aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
+            style={{
+              width: '34px', height: '34px', borderRadius: '8px',
+              border: '1px solid rgba(255,255,255,0.1)',
+              background: 'rgba(255,255,255,0.05)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '1rem', marginLeft: '4px',
+            }}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </motion.button>
+
           <motion.a
             href="#contact"
             onClick={(e) => handleNavClick(e, '#contact')}
@@ -191,6 +212,8 @@ export default function Navbar() {
         {/* Mobile Hamburger */}
         <button
           onClick={() => setMenuOpen(!menuOpen)}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
           style={{
             background: 'none',
             border: '1px solid rgba(255,255,255,0.1)',

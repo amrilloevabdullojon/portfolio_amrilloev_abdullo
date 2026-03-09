@@ -106,6 +106,7 @@ function ProjectCard({ project, tComingSoon = '🔒 Coming Soon' }) {
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`View ${project.title} on GitHub`}
               style={{
                 display: 'flex', alignItems: 'center', gap: '6px',
                 color: '#64748b', textDecoration: 'none', fontSize: '0.85rem',
@@ -126,6 +127,7 @@ function ProjectCard({ project, tComingSoon = '🔒 Coming Soon' }) {
               href={project.live}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={`Live demo of ${project.title}`}
               style={{
                 display: 'flex', alignItems: 'center', gap: '6px',
                 color: '#64748b', textDecoration: 'none', fontSize: '0.85rem',
@@ -226,45 +228,60 @@ export default function Projects() {
           ))}
         </motion.div>
 
-        {/* Swiper */}
+        {/* Empty state or Swiper */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <Swiper
-            key={activeFilter}
-            modules={[Autoplay, Pagination, Navigation, EffectCoverflow]}
-            effect="coverflow"
-            grabCursor={true}
-            centeredSlides={true}
-            slidesPerView="auto"
-            coverflowEffect={{
-              rotate: 20,
-              stretch: 0,
-              depth: 80,
-              modifier: 1.2,
-              slideShadows: false,
-            }}
-            autoplay={{
-              delay: 3500,
-              disableOnInteraction: false,
-              pauseOnMouseEnter: true,
-            }}
-            pagination={{ clickable: true }}
-            navigation={true}
-            loop={true}
-            style={{ paddingBottom: '50px', paddingTop: '20px' }}
-          >
-            {(filtered.length ? filtered : projects).map((project) => (
-              <SwiperSlide
-                key={project.id}
-                style={{ width: '360px', height: 'auto' }}
+          {filtered.length === 0 ? (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              style={{ textAlign: 'center', padding: '80px 20px' }}
+            >
+              <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🔍</div>
+              <p style={{ color: '#64748b', fontSize: '1rem', marginBottom: '6px', fontFamily: '"JetBrains Mono", monospace' }}>
+                {t.projects.no_results}{' '}
+                <span style={{ color: '#a5b4fc' }}>{activeFilter}</span>
+              </p>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setActiveFilter(t.projects.filter_all)}
+                style={{
+                  marginTop: '16px', padding: '8px 20px', borderRadius: '50px',
+                  border: '1px solid rgba(99,102,241,0.4)', background: 'rgba(99,102,241,0.1)',
+                  color: '#a5b4fc', fontSize: '0.85rem', fontFamily: '"JetBrains Mono", monospace',
+                  fontWeight: 600,
+                }}
               >
-                <ProjectCard project={project} tComingSoon={t.projects.coming_soon} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
+                {t.projects.reset_filter}
+              </motion.button>
+            </motion.div>
+          ) : (
+            <Swiper
+              key={activeFilter}
+              modules={[Autoplay, Pagination, Navigation, EffectCoverflow]}
+              effect="coverflow"
+              grabCursor={true}
+              centeredSlides={true}
+              slidesPerView="auto"
+              coverflowEffect={{ rotate: 20, stretch: 0, depth: 80, modifier: 1.2, slideShadows: false }}
+              autoplay={{ delay: 3500, disableOnInteraction: false, pauseOnMouseEnter: true }}
+              pagination={{ clickable: true }}
+              navigation={true}
+              loop={true}
+              style={{ paddingBottom: '50px', paddingTop: '20px' }}
+            >
+              {filtered.map((project) => (
+                <SwiperSlide key={project.id} style={{ width: '360px', height: 'auto' }}>
+                  <ProjectCard project={project} tComingSoon={t.projects.coming_soon} />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
         </motion.div>
 
         {/* CTA */}

@@ -1,30 +1,43 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+
+const MAX_TRAIL = 10;
 
 export default function Cursor() {
   const dotRef = useRef(null);
   const glowRef = useRef(null);
-  const pos = useRef({ x: -100, y: -100 });
-  const glowPos = useRef({ x: -100, y: -100 });
+  const pos = useRef({ x: -200, y: -200 });
+  const glowPos = useRef({ x: -200, y: -200 });
   const rafRef = useRef(null);
+  const [trail, setTrail] = useState([]);
+  const trailRef = useRef([]);
+  const idRef = useRef(0);
 
   useEffect(() => {
-    // Hide on touch devices
     if (window.matchMedia('(pointer: coarse)').matches) return;
 
     const onMove = (e) => {
       pos.current = { x: e.clientX, y: e.clientY };
+      const now = Date.now();
+      const newDot = { id: idRef.current++, x: e.clientX, y: e.clientY, born: now };
+      trailRef.current = [...trailRef.current.slice(-(MAX_TRAIL - 1)), newDot];
+      setTrail([...trailRef.current]);
     };
 
     const animate = () => {
-      // Dot follows instantly
       if (dotRef.current) {
         dotRef.current.style.transform = `translate(${pos.current.x - 4}px, ${pos.current.y - 4}px)`;
       }
-      // Glow lags behind (lerp)
       glowPos.current.x += (pos.current.x - glowPos.current.x) * 0.12;
       glowPos.current.y += (pos.current.y - glowPos.current.y) * 0.12;
       if (glowRef.current) {
         glowRef.current.style.transform = `translate(${glowPos.current.x - 20}px, ${glowPos.current.y - 20}px)`;
+      }
+      // Expire trail dots older than 350ms
+      const now = Date.now();
+      const alive = trailRef.current.filter((d) => now - d.born < 350);
+      if (alive.length !== trailRef.current.length) {
+        trailRef.current = alive;
+        setTrail([...alive]);
       }
       rafRef.current = requestAnimationFrame(animate);
     };
@@ -67,42 +80,54 @@ export default function Cursor() {
 
   return (
     <>
-      <style>{`
-        *, *::before, *::after { cursor: none !important; }
-      `}</style>
-      {/* Small sharp dot */}
+      <style>{`*, *::before, *::after { cursor: none !important; }`}</style>
+
+      {/* Trail dots */}
+      {trail.map((dot, i) => {
+        const age = (Date.now() - dot.born) / 350;
+        const opacity = Math.max(0, (1 - age) * 0.45);
+        const scale = Math.max(0, 1 - age * 0.6);
+        const size = 5 + (MAX_TRAIL - i) * 0.4;
+        return (
+          <div
+            key={dot.id}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: `${size}px`,
+              height: `${size}px`,
+              borderRadius: '50%',
+              background: `rgba(99,102,241,${opacity})`,
+              transform: `translate(${dot.x - size / 2}px, ${dot.y - size / 2}px) scale(${scale})`,
+              pointerEvents: 'none',
+              zIndex: 99995,
+              willChange: 'transform, opacity',
+            }}
+          />
+        );
+      })}
+
+      {/* Sharp dot */}
       <div
         ref={dotRef}
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: '#a5b4fc',
-          pointerEvents: 'none',
-          zIndex: 99999,
-          willChange: 'transform',
-          transition: 'opacity 0.15s ease',
-          mixBlendMode: 'difference',
+          position: 'fixed', top: 0, left: 0,
+          width: '8px', height: '8px', borderRadius: '50%',
+          background: '#a5b4fc', pointerEvents: 'none',
+          zIndex: 99999, willChange: 'transform',
+          transition: 'opacity 0.15s ease', mixBlendMode: 'difference',
         }}
       />
       {/* Lagging glow ring */}
       <div
         ref={glowRef}
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '40px',
-          height: '40px',
-          borderRadius: '50%',
+          position: 'fixed', top: 0, left: 0,
+          width: '40px', height: '40px', borderRadius: '50%',
           border: '1px solid rgba(99,102,241,0.6)',
-          pointerEvents: 'none',
-          zIndex: 99998,
-          willChange: 'transform',
-          opacity: 0.35,
+          pointerEvents: 'none', zIndex: 99998,
+          willChange: 'transform', opacity: 0.35,
           transition: 'width 0.2s ease, height 0.2s ease, opacity 0.2s ease',
         }}
       />

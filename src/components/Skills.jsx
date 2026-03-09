@@ -1,12 +1,27 @@
 import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { skills } from '../data/portfolio';
+import { useLang } from '../context/LangContext';
+import {
+  RadarChart, Radar, PolarGrid, PolarAngleAxis,
+  ResponsiveContainer, Tooltip,
+} from 'recharts';
 
 const allSkillItems = skills.flatMap((cat) => cat.items);
 
 export default function Skills() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
+  const { t } = useLang();
+
+  const radarData = [
+    { subject: 'Frontend', value: 90 },
+    { subject: 'Backend', value: 80 },
+    { subject: 'Database', value: 78 },
+    { subject: 'DevOps', value: 62 },
+    { subject: 'TypeScript', value: 78 },
+    { subject: 'API Design', value: 80 },
+  ];
 
   return (
     <section
@@ -23,8 +38,9 @@ export default function Skills() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2>Skills & Technologies</h2>
+          <h2>{t.skills.title}</h2>
           <div className="title-line" />
+          <p style={{ color: '#64748b', marginTop: '12px', fontSize: '0.95rem' }}>{t.skills.subtitle}</p>
         </motion.div>
 
         <div
@@ -178,7 +194,7 @@ export default function Skills() {
               ))}
             </div>
 
-            {/* Experience bar */}
+            {/* Radar Chart */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -186,43 +202,39 @@ export default function Skills() {
               className="glass-card"
               style={{ marginTop: '40px', padding: '24px' }}
             >
-              <p
-                style={{
-                  color: '#64748b',
-                  fontSize: '0.8rem',
-                  fontFamily: '"JetBrains Mono", monospace',
-                  marginBottom: '16px',
-                }}
-              >
-                // overall experience
+              <p style={{ color: '#64748b', fontSize: '0.8rem', fontFamily: '"JetBrains Mono", monospace', marginBottom: '8px' }}>
+                // skill radar
               </p>
-              {[
-                { label: 'Frontend Development', pct: 90 },
-                { label: 'Backend Development', pct: 80 },
-                { label: 'Database Design', pct: 78 },
-                { label: 'DevOps / CI/CD', pct: 62 },
-              ].map((item, i) => (
-                <div key={item.label} style={{ marginBottom: i < 3 ? '12px' : 0 }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                    <span style={{ color: '#94a3b8', fontSize: '0.8rem' }}>{item.label}</span>
-                    <span style={{ color: '#6366f1', fontSize: '0.75rem', fontFamily: '"JetBrains Mono", monospace' }}>
-                      {item.pct}%
-                    </span>
-                  </div>
-                  <div style={{ height: '4px', background: 'rgba(255,255,255,0.06)', borderRadius: '2px', overflow: 'hidden' }}>
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={isInView ? { width: `${item.pct}%` } : {}}
-                      transition={{ duration: 1.3, ease: 'easeOut', delay: 0.7 + i * 0.08 }}
-                      style={{
-                        height: '100%',
-                        borderRadius: '2px',
-                        background: 'linear-gradient(90deg, #6366f1, #a78bfa)',
+              {isInView && (
+                <ResponsiveContainer width="100%" height={260}>
+                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
+                    <PolarGrid stroke="rgba(255,255,255,0.08)" />
+                    <PolarAngleAxis
+                      dataKey="subject"
+                      tick={{ fill: '#64748b', fontSize: 11, fontFamily: '"JetBrains Mono", monospace' }}
+                    />
+                    <Radar
+                      name="Skills"
+                      dataKey="value"
+                      stroke="#6366f1"
+                      fill="#6366f1"
+                      fillOpacity={0.2}
+                      strokeWidth={2}
+                    />
+                    <Tooltip
+                      formatter={(v) => [`${v}%`, 'Level']}
+                      contentStyle={{
+                        background: '#13131f',
+                        border: '1px solid rgba(99,102,241,0.3)',
+                        borderRadius: '8px',
+                        color: '#a5b4fc',
+                        fontSize: '0.8rem',
+                        fontFamily: '"JetBrains Mono", monospace',
                       }}
                     />
-                  </div>
-                </div>
-              ))}
+                  </RadarChart>
+                </ResponsiveContainer>
+              )}
             </motion.div>
           </div>
         </div>

@@ -73,6 +73,7 @@ export default function Contact() {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [sending, setSending] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [toast, setToast] = useState({ visible: false, message: '', type: 'success' });
   const [copied, setCopied] = useState(false);
   const { t } = useLang();
@@ -112,6 +113,13 @@ export default function Contact() {
     if (Object.keys(errs).length > 0) return;
 
     setSending(true);
+    setProgress(0);
+    const progressInterval = setInterval(() => {
+      setProgress((p) => {
+        if (p >= 90) { clearInterval(progressInterval); return 90; }
+        return p + Math.random() * 12;
+      });
+    }, 200);
     try {
       // EmailJS integration — fill in your credentials in .env
       const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -139,7 +147,8 @@ export default function Contact() {
     } catch {
       showToast('Something went wrong. Try again.', 'error');
     } finally {
-      setSending(false);
+      setProgress(100);
+      setTimeout(() => { setSending(false); setProgress(0); }, 400);
     }
   };
 
@@ -299,6 +308,7 @@ export default function Contact() {
                   type="text"
                   style={inputStyle('name')}
                   placeholder="John Doe"
+                  aria-label="Your name"
                   value={formData.name}
                   onChange={(e) => handleChange('name', e.target.value)}
                   onBlur={() => handleBlur('name')}
@@ -318,6 +328,7 @@ export default function Contact() {
                   type="email"
                   style={inputStyle('email')}
                   placeholder="john@example.com"
+                  aria-label="Email address"
                   value={formData.email}
                   onChange={(e) => handleChange('email', e.target.value)}
                   onBlur={() => handleBlur('email')}
@@ -342,10 +353,33 @@ export default function Contact() {
                   onBlur={() => handleBlur('message')}
                   onFocus={(e) => { e.target.style.borderColor = 'rgba(99,102,241,0.5)'; }}
                 />
-                {touched.message && errors.message && (
-                  <p style={{ color: '#f87171', fontSize: '0.75rem', marginTop: '4px' }}>{errors.message}</p>
-                )}
+                {/* Character counter */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '4px', alignItems: 'center' }}>
+                  {touched.message && errors.message
+                    ? <p style={{ color: '#f87171', fontSize: '0.75rem', margin: 0 }}>{errors.message}</p>
+                    : <span />
+                  }
+                  <span style={{
+                    color: formData.message.length > 450 ? '#f87171' : '#475569',
+                    fontSize: '0.72rem',
+                    fontFamily: '"JetBrains Mono", monospace',
+                    transition: 'color 0.2s ease',
+                  }}>
+                    {formData.message.length}/500
+                  </span>
+                </div>
               </div>
+
+              {/* Progress bar */}
+              {sending && (
+                <div style={{ height: '2px', background: 'rgba(99,102,241,0.15)', borderRadius: '1px', overflow: 'hidden' }}>
+                  <motion.div
+                    animate={{ width: `${progress}%` }}
+                    transition={{ ease: 'linear', duration: 0.2 }}
+                    style={{ height: '100%', background: 'linear-gradient(90deg, #6366f1, #a78bfa)', borderRadius: '1px' }}
+                  />
+                </div>
+              )}
 
               <motion.button
                 type="submit"
@@ -353,10 +387,18 @@ export default function Contact() {
                 whileHover={{ scale: sending ? 1 : 1.03 }}
                 whileTap={{ scale: sending ? 1 : 0.97 }}
                 className="btn-primary"
-                style={{ justifyContent: 'center', marginTop: '8px', opacity: sending ? 0.7 : 1 }}
+                aria-label="Send message"
+                style={{ justifyContent: 'center', marginTop: '8px', opacity: sending ? 0.8 : 1, gap: '8px' }}
               >
+                {sending && (
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+                    style={{ animation: 'spin 0.8s linear infinite' }}>
+                    <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                  </svg>
+                )}
                 {sending ? t.contact.sending : t.contact.send}
               </motion.button>
+              <style>{`@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
             </form>
           </motion.div>
         </div>
