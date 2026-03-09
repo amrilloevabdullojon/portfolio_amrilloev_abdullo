@@ -10,6 +10,7 @@ import LoadingScreen from './components/LoadingScreen';
 import ScrollToTop from './components/ScrollToTop';
 import Cursor from './components/Cursor';
 import ErrorBoundary from './components/ErrorBoundary';
+import { useTheme } from './context/ThemeContext';
 
 const About = lazy(() => import('./components/About'));
 const Skills = lazy(() => import('./components/Skills'));
@@ -23,8 +24,10 @@ const NotFound = lazy(() => import('./components/NotFound'));
 gsap.registerPlugin(ScrollTrigger);
 
 function PortfolioPage() {
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   return (
-    <div style={{ background: '#0a0a0f', minHeight: '100vh', overflowX: 'hidden', cursor: 'none' }}>
+    <div style={{ background: isLight ? '#f1f5fb' : '#0a0a0f', minHeight: '100vh', overflowX: 'hidden', cursor: 'none', transition: 'background 0.3s ease' }}>
       <Navbar />
       <main>
         <Hero />

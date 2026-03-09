@@ -6,6 +6,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import ParticleCanvas from './ParticleCanvas';
 import { personalInfo } from '../data/portfolio';
 import { useLang } from '../context/LangContext';
+import { useTheme } from '../context/ThemeContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -59,6 +60,8 @@ const socialLinks = [
 
 export default function Hero() {
   const { t } = useLang();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const typeText = useTypewriter(personalInfo.taglines);
   const blob1Ref = useRef(null);
   const blob2Ref = useRef(null);
@@ -237,9 +240,9 @@ export default function Hero() {
               gap: '6px',
               padding: '6px 16px',
               borderRadius: '50px',
-              background: 'rgba(99,102,241,0.12)',
+              background: isLight ? 'rgba(99,102,241,0.08)' : 'rgba(99,102,241,0.12)',
               border: '1px solid rgba(99,102,241,0.3)',
-              color: '#a5b4fc',
+              color: isLight ? '#4f46e5' : '#a5b4fc',
               fontSize: '0.8rem',
               fontWeight: 500,
               marginBottom: '28px',
@@ -283,7 +286,9 @@ export default function Hero() {
             fontWeight: 800,
             lineHeight: 1.1,
             marginBottom: '20px',
-            background: 'linear-gradient(135deg, #fff 0%, #c7d2fe 50%, #a78bfa 100%)',
+            background: isLight
+              ? 'linear-gradient(135deg, #1e293b 0%, #4f46e5 50%, #7c3aed 100%)'
+              : 'linear-gradient(135deg, #fff 0%, #c7d2fe 50%, #a78bfa 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
@@ -315,7 +320,7 @@ export default function Hero() {
         <motion.p
           variants={itemVariants}
           style={{
-            color: '#94a3b8',
+            color: isLight ? '#475569' : '#94a3b8',
             fontSize: 'clamp(0.95rem, 2vw, 1.1rem)',
             lineHeight: 1.7,
             maxWidth: '540px',
@@ -357,23 +362,23 @@ export default function Hero() {
               gap: '8px',
               padding: '12px 28px',
               borderRadius: '12px',
-              border: '1px solid rgba(255,255,255,0.12)',
-              color: '#94a3b8',
+              border: isLight ? '1px solid rgba(99,102,241,0.25)' : '1px solid rgba(255,255,255,0.12)',
+              color: isLight ? '#475569' : '#94a3b8',
               textDecoration: 'none',
               fontSize: '0.95rem',
               fontWeight: 600,
               transition: 'all 0.2s ease',
-              background: 'rgba(255,255,255,0.04)',
+              background: isLight ? 'rgba(99,102,241,0.05)' : 'rgba(255,255,255,0.04)',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = 'rgba(99,102,241,0.5)';
-              e.currentTarget.style.color = '#a5b4fc';
-              e.currentTarget.style.background = 'rgba(99,102,241,0.08)';
+              e.currentTarget.style.color = isLight ? '#4f46e5' : '#a5b4fc';
+              e.currentTarget.style.background = 'rgba(99,102,241,0.1)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)';
-              e.currentTarget.style.color = '#94a3b8';
-              e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+              e.currentTarget.style.borderColor = isLight ? 'rgba(99,102,241,0.25)' : 'rgba(255,255,255,0.12)';
+              e.currentTarget.style.color = isLight ? '#475569' : '#94a3b8';
+              e.currentTarget.style.background = isLight ? 'rgba(99,102,241,0.05)' : 'rgba(255,255,255,0.04)';
             }}
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -402,9 +407,9 @@ export default function Hero() {
                 gap: '6px',
                 padding: '8px 16px',
                 borderRadius: '8px',
-                background: 'rgba(255,255,255,0.05)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                color: '#94a3b8',
+                background: isLight ? 'rgba(99,102,241,0.06)' : 'rgba(255,255,255,0.05)',
+                border: isLight ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(255,255,255,0.1)',
+                color: isLight ? '#475569' : '#94a3b8',
                 textDecoration: 'none',
                 fontSize: '0.8rem',
                 fontFamily: '"JetBrains Mono", monospace',
@@ -412,14 +417,14 @@ export default function Hero() {
                 transition: 'all 0.2s ease',
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.color = '#a5b4fc';
+                e.currentTarget.style.color = isLight ? '#4f46e5' : '#a5b4fc';
                 e.currentTarget.style.borderColor = 'rgba(99,102,241,0.4)';
-                e.currentTarget.style.background = 'rgba(99,102,241,0.1)';
+                e.currentTarget.style.background = 'rgba(99,102,241,0.12)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.color = '#94a3b8';
-                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
-                e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
+                e.currentTarget.style.color = isLight ? '#475569' : '#94a3b8';
+                e.currentTarget.style.borderColor = isLight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.1)';
+                e.currentTarget.style.background = isLight ? 'rgba(99,102,241,0.06)' : 'rgba(255,255,255,0.05)';
               }}
             >
               {s.icon}
@@ -464,10 +469,10 @@ export default function Hero() {
               transition={{ delay: 1.2, type: 'spring' }}
               style={{
                 position: 'absolute', bottom: '10px', right: '-20px',
-                background: 'rgba(10,10,15,0.9)', backdropFilter: 'blur(12px)',
+                background: isLight ? 'rgba(255,255,255,0.95)' : 'rgba(10,10,15,0.9)', backdropFilter: 'blur(12px)',
                 border: '1px solid rgba(99,102,241,0.3)', borderRadius: '12px',
                 padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '8px',
-                textDecoration: 'none', color: 'white', fontSize: '0.78rem', fontWeight: 600,
+                textDecoration: 'none', color: isLight ? '#1e293b' : 'white', fontSize: '0.78rem', fontWeight: 600,
                 boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
                 zIndex: 2,
               }}
