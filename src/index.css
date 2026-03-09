@@ -118,6 +118,63 @@ html.light .typewriter-cursor {
   color: #7c3aed;
 }
 
+/* ── Light theme: override hardcoded inline colors ─────── */
+/* These use !important because inline styles have highest specificity */
+
+/* Headings inside cards and sections */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4 {
+  color: #1e293b !important;
+}
+
+/* White text that becomes invisible on light bg */
+html.light .glass-card h3,
+html.light .glass-card h4 {
+  color: #1e293b !important;
+}
+
+/* Muted/secondary text — keep readable contrast on light bg */
+html.light p {
+  color: #475569;
+}
+
+/* Section subtitle text */
+html.light .section-title p {
+  color: #64748b !important;
+}
+
+/* Glass card body text */
+html.light .glass-card p {
+  color: #475569 !important;
+}
+
+/* Tech tags inside glass cards */
+html.light .glass-card span {
+  color: #4f46e5;
+}
+
+/* Available badge in hero */
+html.light section span[style] {
+  color: inherit;
+}
+
+/* Particle canvas shouldn't show on light bg — dim it */
+html.light canvas {
+  opacity: 0.3;
+}
+
+/* Progress bar track */
+html.light nav > div:last-of-type > div {
+  background: rgba(99, 102, 241, 0.1);
+}
+
+/* Section background alternating */
+html.light section:nth-child(even) {
+  background-color: rgba(241, 245, 251, 0.6);
+}
+
 /* ── Utility Classes ─────────────────────────────── */
 .glass-card {
   background: var(--glass-bg);

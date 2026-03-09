@@ -9,7 +9,6 @@ const navHrefs = ['#hero', '#about', '#skills', '#timeline', '#projects', '#cont
 const LANGS = [
   { code: 'en', label: 'EN' },
   { code: 'ru', label: 'RU' },
-  { code: 'uz', label: 'UZ' },
 ];
 
 export default function Navbar() {
