@@ -6,15 +6,22 @@ import { useTheme } from '../context/ThemeContext';
 
 function GitHubStatsImage({ src, isLight }) {
   const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
+  const [gone, setGone] = useState(false);
   const handleLoad = useCallback(() => setLoaded(true), []);
-  const handleError = useCallback(() => setError(true), []);
-  if (error) return null;
+  const handleError = useCallback(() => setGone(true), []);
+
+  // If image never fires load/error (network blocked), give up after 5s
+  useEffect(() => {
+    if (loaded) return;
+    const t = setTimeout(() => setGone(true), 5000);
+    return () => clearTimeout(t);
+  }, [loaded]);
+
+  if (gone) return null;
   return (
-    <div style={{ position: 'relative', width: '100%', minHeight: loaded ? 0 : '130px' }}>
+    <div style={{ width: '100%' }}>
       {!loaded && (
         <div style={{
-          position: loaded ? 'absolute' : 'relative',
           width: '100%',
           height: '130px',
           borderRadius: '8px',
