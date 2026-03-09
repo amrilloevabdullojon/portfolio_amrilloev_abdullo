@@ -225,7 +225,6 @@ export default function Navbar() {
             display: 'none',
           }}
           className="mobile-menu-btn"
-          aria-label="Toggle menu"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             {menuOpen ? (

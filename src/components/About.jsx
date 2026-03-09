@@ -41,12 +41,7 @@ const fadeUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
 };
 
-const traits = [
-  { icon: '🚀', label: 'Performance-focused development' },
-  { icon: '🎨', label: 'Clean, maintainable code' },
-  { icon: '🤝', label: 'Team collaboration & communication' },
-  { icon: '📚', label: 'Continuous learning mindset' },
-];
+const traitIcons = ['🚀', '🎨', '🤝', '📚'];
 
 function StatCard({ stat, isInView }) {
   const suffix = stat.value.replace(/[0-9]/g, '');
@@ -77,6 +72,7 @@ function StatCard({ stat, isInView }) {
 export default function About() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
+  const { t } = useLang();
 
   return (
     <section id="about" className="section-padding" ref={ref}>
@@ -88,7 +84,7 @@ export default function About() {
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <h2>About Me</h2>
+          <h2>{t.about.title}</h2>
           <div className="title-line" />
         </motion.div>
 
@@ -230,6 +226,7 @@ export default function About() {
                 src={`https://github-readme-stats.vercel.app/api?username=amrilloevabdullojon&show_icons=true&theme=tokyonight&bg_color=0d0d18&border_color=6366f100&title_color=a78bfa&icon_color=6366f1&text_color=94a3b8&hide_border=true`}
                 alt="GitHub Stats"
                 style={{ width: '100%', display: 'block' }}
+                onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
             </motion.a>
           </motion.div>
@@ -252,12 +249,12 @@ export default function About() {
                   textTransform: 'uppercase',
                 }}
               >
-                // about me
+                {t.about.tag}
               </p>
               <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', fontWeight: 700, color: 'white', lineHeight: 1.2 }}>
-                Crafting Digital{' '}
-                <span style={{ color: '#8b5cf6' }}>Experiences</span>{' '}
-                That Matter
+                {t.about.heading}{' '}
+                <span style={{ color: '#8b5cf6' }}>{t.about.heading2}</span>{' '}
+                {t.about.heading3}
               </h2>
             </div>
 
@@ -272,9 +269,9 @@ export default function About() {
               animate={isInView ? 'visible' : 'hidden'}
               style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}
             >
-              {traits.map((trait) => (
+              {t.about.traits.map((label, i) => (
                 <motion.div
-                  key={trait.label}
+                  key={label}
                   variants={fadeUp}
                   style={{
                     display: 'flex',
@@ -286,8 +283,8 @@ export default function About() {
                     border: '1px solid rgba(99,102,241,0.15)',
                   }}
                 >
-                  <span style={{ fontSize: '1.2rem' }}>{trait.icon}</span>
-                  <span style={{ color: '#cbd5e1', fontSize: '0.95rem' }}>{trait.label}</span>
+                  <span style={{ fontSize: '1.2rem' }}>{traitIcons[i]}</span>
+                  <span style={{ color: '#cbd5e1', fontSize: '0.95rem' }}>{label}</span>
                 </motion.div>
               ))}
             </motion.div>
@@ -302,7 +299,7 @@ export default function About() {
                 whileTap={{ scale: 0.97 }}
                 className="btn-primary"
               >
-                GitHub Profile →
+                {t.about.cta_github}
               </motion.a>
               <motion.a
                 href={`mailto:${personalInfo.email}`}
@@ -310,7 +307,7 @@ export default function About() {
                 whileTap={{ scale: 0.97 }}
                 className="btn-outline"
               >
-                Get in Touch
+                {t.about.cta_contact}
               </motion.a>
               <motion.a
                 href="/assets/cv.pdf"
@@ -345,7 +342,7 @@ export default function About() {
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" />
                 </svg>
-                Download CV
+                {t.about.cta_cv}
               </motion.a>
             </div>
           </motion.div>

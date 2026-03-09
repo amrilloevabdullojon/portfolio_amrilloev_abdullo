@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { personalInfo } from '../data/portfolio';
 import Toast from './Toast';
@@ -153,12 +153,13 @@ export default function Contact() {
         );
       }
 
-      showToast('Message sent successfully!', 'success');
+      showToast(t.contact.sent, 'success');
       setFormData({ name: '', email: '', message: '' });
       setTouched({});
       setErrors({});
-    } catch {
-      showToast('Something went wrong. Try again.', 'error');
+    } catch (err) {
+      console.error('[Contact] Email send failed:', err);
+      showToast(t.contact.error, 'error');
     } finally {
       if (progressIntervalRef.current) {
         clearInterval(progressIntervalRef.current);

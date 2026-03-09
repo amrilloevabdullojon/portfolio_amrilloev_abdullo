@@ -189,7 +189,7 @@ export default function Timeline() {
 
           {visible.length === 0 && (
             <div style={{ textAlign: 'center', padding: '60px 20px', color: '#64748b', fontFamily: '"JetBrains Mono", monospace', fontSize: '0.9rem' }}>
-              No items for this filter.
+              {t.timeline.no_items}
             </div>
           )}
         </div>
