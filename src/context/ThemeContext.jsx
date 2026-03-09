@@ -3,7 +3,13 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext(null);
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+  const [theme, setTheme] = useState(() => {
+    const stored = localStorage.getItem('theme') || 'dark';
+    // Apply immediately (before first paint) to avoid flash of wrong theme
+    document.documentElement.classList.toggle('light', stored === 'light');
+    document.documentElement.classList.toggle('dark', stored === 'dark');
+    return stored;
+  });
 
   useEffect(() => {
     document.documentElement.classList.toggle('light', theme === 'light');

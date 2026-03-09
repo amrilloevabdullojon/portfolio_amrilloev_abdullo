@@ -81,6 +81,43 @@ html.light h1, html.light h2, html.light h3 {
   color: #1e293b;
 }
 
+/* Section backgrounds */
+html.light section {
+  background-color: transparent;
+}
+
+/* Scrollbar */
+html.light ::-webkit-scrollbar-track {
+  background: #e2e8f0;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.4);
+}
+
+/* title-line accent */
+html.light .title-line {
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+}
+
+/* btn-outline in light mode */
+html.light .btn-outline {
+  color: #4f46e5;
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+/* gradient-text fix for light (white start → too bright) */
+html.light .gradient-text {
+  background: linear-gradient(135deg, #1e293b 0%, #4f46e5 50%, #7c3aed 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Typewriter cursor */
+html.light .typewriter-cursor {
+  color: #7c3aed;
+}
+
 /* ── Utility Classes ─────────────────────────────── */
 .glass-card {
   background: var(--glass-bg);

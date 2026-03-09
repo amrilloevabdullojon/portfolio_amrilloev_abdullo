@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, LayoutGroup } from 'framer-motion';
 import { useLang } from '../context/LangContext';
 import { useTheme } from '../context/ThemeContext';
 
@@ -21,6 +21,16 @@ export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
 
   const navLinks = navKeys.map((key, i) => ({ label: t.nav[key], href: navHrefs[i] }));
+
+  const isLight = theme === 'light';
+  const navBg = scrolled
+    ? isLight ? 'rgba(241,245,251,0.92)' : 'rgba(10,10,15,0.85)'
+    : 'transparent';
+  const navBorder = scrolled
+    ? isLight ? '1px solid rgba(99,102,241,0.15)' : '1px solid rgba(255,255,255,0.08)'
+    : 'none';
+  const linkColor = isLight ? '#475569' : '#94a3b8';
+  const linkActiveColor = isLight ? '#4f46e5' : '#a5b4fc';
 
   useEffect(() => {
     const handler = () => {
@@ -73,10 +83,10 @@ export default function Navbar() {
         right: 0,
         zIndex: 1000,
         padding: scrolled ? '12px 32px' : '20px 32px',
-        background: scrolled ? 'rgba(10,10,15,0.85)' : 'transparent',
+        background: navBg,
         backdropFilter: scrolled ? 'blur(20px)' : 'none',
         WebkitBackdropFilter: scrolled ? 'blur(20px)' : 'none',
-        borderBottom: scrolled ? '1px solid rgba(255,255,255,0.08)' : 'none',
+        borderBottom: navBorder,
         boxShadow: scrolled ? '0 4px 30px rgba(0,0,0,0.3)' : 'none',
         transition: 'all 0.4s ease',
       }}
@@ -102,6 +112,7 @@ export default function Navbar() {
 
         {/* Desktop Links */}
         <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }} className="desktop-nav">
+          <LayoutGroup id="desktop-nav">
           {navLinks.map((link) => {
             const isActive = activeSection === link.href.slice(1);
             return (
@@ -116,7 +127,7 @@ export default function Navbar() {
                   position: 'relative',
                   padding: '8px 16px',
                   borderRadius: '8px',
-                  color: isActive ? '#a5b4fc' : '#94a3b8',
+                  color: isActive ? linkActiveColor : linkColor,
                   textDecoration: 'none',
                   fontSize: '0.9rem',
                   fontWeight: isActive ? 600 : 500,
@@ -125,13 +136,13 @@ export default function Navbar() {
                 }}
                 onMouseEnter={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.color = '#a5b4fc';
+                    e.currentTarget.style.color = linkActiveColor;
                     e.currentTarget.style.background = 'rgba(99,102,241,0.07)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (!isActive) {
-                    e.currentTarget.style.color = '#94a3b8';
+                    e.currentTarget.style.color = linkColor;
                     e.currentTarget.style.background = 'transparent';
                   }
                 }}
@@ -144,7 +155,7 @@ export default function Navbar() {
                       position: 'absolute',
                       bottom: '4px',
                       left: '50%',
-                      transform: 'translateX(-50%)',
+                      marginLeft: '-2px',
                       width: '4px',
                       height: '4px',
                       borderRadius: '50%',
@@ -158,6 +169,7 @@ export default function Navbar() {
               </motion.a>
             );
           })}
+          </LayoutGroup>
           {/* Language Switcher */}
           <div style={{ display: 'flex', gap: '2px', marginLeft: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '3px', border: '1px solid rgba(255,255,255,0.08)' }}>
             {LANGS.map(({ code, label }) => (
@@ -253,10 +265,10 @@ export default function Navbar() {
               top: '100%',
               left: 0,
               right: 0,
-              background: 'rgba(10,10,15,0.97)',
+              background: isLight ? 'rgba(241,245,251,0.97)' : 'rgba(10,10,15,0.97)',
               backdropFilter: 'blur(20px)',
               WebkitBackdropFilter: 'blur(20px)',
-              borderBottom: '1px solid rgba(255,255,255,0.08)',
+              borderBottom: isLight ? '1px solid rgba(99,102,241,0.15)' : '1px solid rgba(255,255,255,0.08)',
               padding: '16px 32px 24px',
               display: 'flex',
               flexDirection: 'column',
@@ -276,7 +288,7 @@ export default function Navbar() {
                   style={{
                     padding: '12px 16px',
                     borderRadius: '8px',
-                    color: isActive ? '#a5b4fc' : '#94a3b8',
+                    color: isActive ? linkActiveColor : linkColor,
                     textDecoration: 'none',
                     fontSize: '1rem',
                     fontWeight: isActive ? 600 : 500,

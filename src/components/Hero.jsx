@@ -469,6 +469,7 @@ export default function Hero() {
                 padding: '8px 14px', display: 'flex', alignItems: 'center', gap: '8px',
                 textDecoration: 'none', color: 'white', fontSize: '0.78rem', fontWeight: 600,
                 boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+                zIndex: 2,
               }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="#6366f1">
