@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { useLang } from '../context/LangContext';
+import { useTheme } from '../context/ThemeContext';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
@@ -43,7 +44,7 @@ function Stars({ count }) {
   );
 }
 
-function TestimonialCard({ item }) {
+function TestimonialCard({ item, isLight }) {
   return (
     <div
       className="glass-card"
@@ -51,8 +52,8 @@ function TestimonialCard({ item }) {
     >
       <div style={{ fontSize: '2.5rem', lineHeight: 1, color: 'rgba(99,102,241,0.3)', fontFamily: 'serif', marginBottom: '8px' }}>"</div>
       <Stars count={item.rating} />
-      <p style={{ color: '#94a3b8', fontSize: '0.9rem', lineHeight: 1.75, flex: 1, marginBottom: '20px' }}>{item.text}</p>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+      <p style={{ color: isLight ? '#475569' : '#94a3b8', fontSize: '0.9rem', lineHeight: 1.75, flex: 1, marginBottom: '20px' }}>{item.text}</p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: isLight ? '1px solid rgba(99,102,241,0.12)' : '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{
           width: '42px', height: '42px', borderRadius: '50%',
           background: 'rgba(99,102,241,0.15)', border: '1px solid rgba(99,102,241,0.25)',
@@ -60,7 +61,7 @@ function TestimonialCard({ item }) {
           fontSize: '1.3rem', flexShrink: 0,
         }}>{item.avatar}</div>
         <div>
-          <div style={{ color: 'white', fontWeight: 600, fontSize: '0.9rem' }}>{item.name}</div>
+          <div style={{ color: isLight ? '#1e293b' : 'white', fontWeight: 600, fontSize: '0.9rem' }}>{item.name}</div>
           <div style={{ color: '#6366f1', fontSize: '0.75rem', marginTop: '2px' }}>{item.role}</div>
         </div>
       </div>
@@ -72,6 +73,8 @@ export default function Testimonials() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const { t } = useLang();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -84,7 +87,7 @@ export default function Testimonials() {
 
   return (
     <section id="testimonials" className="section-padding" ref={ref}
-      style={{ background: 'linear-gradient(180deg, #0a0a0f 0%, #0d0d18 50%, #0a0a0f 100%)' }}
+      style={{ background: isLight ? 'linear-gradient(180deg, #eef2ff 0%, #f1f5fb 50%, #eef2ff 100%)' : 'linear-gradient(180deg, #0a0a0f 0%, #0d0d18 50%, #0a0a0f 100%)' }}
     >
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         <motion.div
@@ -112,7 +115,7 @@ export default function Testimonials() {
           >
             {testimonials.map((item) => (
               <SwiperSlide key={item.id}>
-                <TestimonialCard item={item} />
+                <TestimonialCard item={item} isLight={isLight} />
               </SwiperSlide>
             ))}
           </Swiper>
@@ -131,7 +134,7 @@ export default function Testimonials() {
                 transition={{ duration: 0.6, delay: i * 0.12 }}
                 whileHover={{ y: -6, boxShadow: '0 0 30px rgba(99,102,241,0.2)' }}
               >
-                <TestimonialCard item={item} />
+                <TestimonialCard item={item} isLight={isLight} />
               </motion.div>
             ))}
           </div>

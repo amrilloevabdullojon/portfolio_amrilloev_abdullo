@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { skills } from '../data/portfolio';
 import { useLang } from '../context/LangContext';
+import { useTheme } from '../context/ThemeContext';
 import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
   ResponsiveContainer, Tooltip,
@@ -13,6 +14,8 @@ export default function Skills() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const { t } = useLang();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   const radarData = [
     { subject: 'Frontend', value: 90 },
@@ -28,7 +31,7 @@ export default function Skills() {
       id="skills"
       className="section-padding"
       ref={ref}
-      style={{ background: 'linear-gradient(180deg, #0a0a0f 0%, #0d0d18 50%, #0a0a0f 100%)' }}
+      style={{ background: isLight ? 'linear-gradient(180deg, #eef2ff 0%, #f1f5fb 50%, #eef2ff 100%)' : 'linear-gradient(180deg, #0a0a0f 0%, #0d0d18 50%, #0a0a0f 100%)' }}
     >
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         {/* Title */}
@@ -224,10 +227,10 @@ export default function Skills() {
                     <Tooltip
                       formatter={(v) => [`${v}%`, 'Level']}
                       contentStyle={{
-                        background: '#13131f',
+                        background: isLight ? '#ffffff' : '#13131f',
                         border: '1px solid rgba(99,102,241,0.3)',
                         borderRadius: '8px',
-                        color: '#a5b4fc',
+                        color: isLight ? '#4f46e5' : '#a5b4fc',
                         fontSize: '0.8rem',
                         fontFamily: '"JetBrains Mono", monospace',
                       }}

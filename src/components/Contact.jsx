@@ -3,6 +3,7 @@ import { motion, useInView } from 'framer-motion';
 import { personalInfo } from '../data/portfolio';
 import Toast from './Toast';
 import { useLang } from '../context/LangContext';
+import { useTheme } from '../context/ThemeContext';
 
 const socialLinks = [
   {
@@ -78,6 +79,8 @@ export default function Contact() {
   const [toast, setToast] = useState({ visible: false, message: '', type: 'success' });
   const [copied, setCopied] = useState(false);
   const { t } = useLang();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   // Cleanup interval on unmount
   useEffect(() => {
@@ -173,10 +176,10 @@ export default function Contact() {
   const inputStyle = (field) => ({
     width: '100%',
     padding: '12px 16px',
-    background: 'rgba(255,255,255,0.04)',
-    border: `1px solid ${touched[field] && errors[field] ? 'rgba(239,68,68,0.6)' : 'rgba(255,255,255,0.1)'}`,
+    background: isLight ? 'rgba(99,102,241,0.04)' : 'rgba(255,255,255,0.04)',
+    border: `1px solid ${touched[field] && errors[field] ? 'rgba(239,68,68,0.6)' : isLight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.1)'}`,
     borderRadius: '10px',
-    color: 'white',
+    color: isLight ? '#1e293b' : 'white',
     fontSize: '0.9rem',
     outline: 'none',
     transition: 'border-color 0.2s ease',
@@ -189,7 +192,7 @@ export default function Contact() {
       id="contact"
       className="section-padding"
       ref={ref}
-      style={{ background: 'linear-gradient(180deg, #0a0a0f 0%, #0d0d18 50%, #0a0a0f 100%)' }}
+      style={{ background: isLight ? 'linear-gradient(180deg, #f8faff 0%, #eef2ff 50%, #f8faff 100%)' : 'linear-gradient(180deg, #0a0a0f 0%, #0d0d18 50%, #0a0a0f 100%)' }}
     >
       <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
         {/* Title */}
