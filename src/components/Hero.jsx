@@ -288,7 +288,7 @@ export default function Hero() {
             marginBottom: '20px',
             background: isLight
               ? 'linear-gradient(135deg, #6366f1 0%, #7c3aed 50%, #a855f7 100%)'
-              : 'linear-gradient(135deg, #fff 0%, #c7d2fe 50%, #a78bfa 100%)',
+              : 'linear-gradient(135deg, #e0e7ff 0%, #a5b4fc 50%, #8b5cf6 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
