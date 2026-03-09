@@ -121,8 +121,7 @@ html.light .typewriter-cursor {
 /* ── Light theme: override hardcoded inline colors ─────── */
 /* These use !important because inline styles have highest specificity */
 
-/* Headings inside cards and sections */
-html.light h1,
+/* Headings inside cards and sections (not h1 - it controls its own color inline) */
 html.light h2,
 html.light h3,
 html.light h4 {
