@@ -2,8 +2,9 @@ import { useRef, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { timeline } from '../data/portfolio';
 import { useLang } from '../context/LangContext';
+import { useTheme } from '../context/ThemeContext';
 
-function TimelineItem({ item, index, isInView }) {
+function TimelineItem({ item, index, isInView, isLight }) {
   const isLeft = index % 2 === 0;
   return (
     <div
@@ -68,13 +69,13 @@ function TimelineItem({ item, index, isInView }) {
         <div style={{ color: '#64748b', fontSize: '0.78rem', marginBottom: '6px', fontFamily: '"JetBrains Mono", monospace' }}>
           {item.period}
         </div>
-        <h3 style={{ color: 'white', fontSize: '1.05rem', fontWeight: 700, marginBottom: '4px' }}>
+        <h3 style={{ color: isLight ? '#1e293b' : 'white', fontSize: '1.05rem', fontWeight: 700, marginBottom: '4px' }}>
           {item.title}
         </h3>
         <div style={{ color: '#8b5cf6', fontSize: '0.85rem', fontWeight: 600, marginBottom: '10px' }}>
           {item.company}
         </div>
-        <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.65 }}>
+        <p style={{ color: isLight ? '#475569' : '#94a3b8', fontSize: '0.85rem', lineHeight: 1.65 }}>
           {item.description}
         </p>
 
@@ -86,9 +87,9 @@ function TimelineItem({ item, index, isInView }) {
                 style={{
                   padding: '2px 8px',
                   borderRadius: '4px',
-                  background: 'rgba(99,102,241,0.1)',
+                  background: isLight ? 'rgba(99,102,241,0.08)' : 'rgba(99,102,241,0.1)',
                   border: '1px solid rgba(99,102,241,0.2)',
-                  color: '#a5b4fc',
+                  color: isLight ? '#4f46e5' : '#a5b4fc',
                   fontSize: '0.7rem',
                   fontFamily: '"JetBrains Mono", monospace',
                 }}
@@ -108,6 +109,8 @@ export default function Timeline() {
   const isInView = useInView(ref, { once: true, margin: '-80px' });
   const [filter, setFilter] = useState('all');
   const { t } = useLang();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   const filterTabs = [
     { key: 'all', label: t.timeline.filter_all },
@@ -151,9 +154,9 @@ export default function Timeline() {
               style={{
                 padding: '7px 20px',
                 borderRadius: '50px',
-                border: `1px solid ${filter === key ? 'rgba(99,102,241,0.7)' : 'rgba(255,255,255,0.1)'}`,
-                background: filter === key ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.04)',
-                color: filter === key ? '#a5b4fc' : '#64748b',
+                border: `1px solid ${filter === key ? 'rgba(99,102,241,0.7)' : isLight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.1)'}`,
+                background: filter === key ? 'rgba(99,102,241,0.2)' : isLight ? 'rgba(255,255,255,0.5)' : 'rgba(255,255,255,0.04)',
+                color: filter === key ? (isLight ? '#4f46e5' : '#a5b4fc') : '#64748b',
                 fontSize: '0.82rem',
                 fontFamily: '"JetBrains Mono", monospace',
                 fontWeight: 600,
@@ -184,7 +187,7 @@ export default function Timeline() {
           />
 
           {visible.map((item, i) => (
-            <TimelineItem key={item.id} item={item} index={i} isInView={isInView} />
+            <TimelineItem key={item.id} item={item} index={i} isInView={isInView} isLight={isLight} />
           ))}
 
           {visible.length === 0 && (

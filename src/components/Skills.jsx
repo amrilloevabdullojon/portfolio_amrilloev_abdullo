@@ -73,7 +73,7 @@ export default function Skills() {
                   <span style={{ fontSize: '1.1rem' }}>{category.icon}</span>
                   <h3
                     style={{
-                      color: '#e2e8f0',
+                      color: isLight ? '#1e293b' : '#e2e8f0',
                       fontSize: '1rem',
                       fontWeight: 600,
                       fontFamily: '"JetBrains Mono", monospace',
@@ -95,7 +95,7 @@ export default function Skills() {
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                           <span style={{ fontSize: '0.9rem' }}>{skill.icon}</span>
-                          <span style={{ color: '#cbd5e1', fontSize: '0.9rem' }}>{skill.name}</span>
+                          <span style={{ color: isLight ? '#475569' : '#cbd5e1', fontSize: '0.9rem' }}>{skill.name}</span>
                         </div>
                         <motion.span
                           initial={{ opacity: 0 }}
@@ -115,7 +115,7 @@ export default function Skills() {
                       <div
                         style={{
                           height: '6px',
-                          background: 'rgba(255,255,255,0.08)',
+                          background: isLight ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.08)',
                           borderRadius: '3px',
                           overflow: 'hidden',
                         }}
@@ -190,7 +190,7 @@ export default function Skills() {
                   }}
                 >
                   <span style={{ fontSize: '1rem' }}>{skill.icon}</span>
-                  <span style={{ color: '#cbd5e1', fontSize: '0.85rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
+                  <span style={{ color: isLight ? '#475569' : '#cbd5e1', fontSize: '0.85rem', fontWeight: 500, whiteSpace: 'nowrap' }}>
                     {skill.name}
                   </span>
                 </motion.div>
@@ -211,7 +211,7 @@ export default function Skills() {
               <ResponsiveContainer width="100%" height={260}>
                 {isInView ? (
                   <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                    <PolarGrid stroke="rgba(255,255,255,0.08)" />
+                    <PolarGrid stroke={isLight ? 'rgba(99,102,241,0.15)' : 'rgba(255,255,255,0.08)'} />
                     <PolarAngleAxis
                       dataKey="subject"
                       tick={{ fill: '#64748b', fontSize: 11, fontFamily: '"JetBrains Mono", monospace' }}

@@ -167,7 +167,7 @@ export default function Navbar() {
           })}
           </LayoutGroup>
           {/* Language Switcher */}
-          <div style={{ display: 'flex', gap: '2px', marginLeft: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '3px', border: '1px solid rgba(255,255,255,0.08)' }}>
+          <div style={{ display: 'flex', gap: '2px', marginLeft: '8px', background: isLight ? 'rgba(99,102,241,0.06)' : 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '3px', border: isLight ? '1px solid rgba(99,102,241,0.15)' : '1px solid rgba(255,255,255,0.08)' }}>
             {LANGS.map(({ code, label }) => (
               <button
                 key={code}
@@ -177,7 +177,7 @@ export default function Navbar() {
                   borderRadius: '6px',
                   border: 'none',
                   background: lang === code ? 'rgba(99,102,241,0.3)' : 'transparent',
-                  color: lang === code ? '#a5b4fc' : '#64748b',
+                  color: lang === code ? (isLight ? '#4f46e5' : '#a5b4fc') : '#64748b',
                   fontSize: '0.75rem',
                   fontWeight: 700,
                   fontFamily: '"JetBrains Mono", monospace',
@@ -197,8 +197,8 @@ export default function Navbar() {
             aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
             style={{
               width: '34px', height: '34px', borderRadius: '8px',
-              border: '1px solid rgba(255,255,255,0.1)',
-              background: 'rgba(255,255,255,0.05)',
+              border: isLight ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(255,255,255,0.1)',
+              background: isLight ? 'rgba(99,102,241,0.06)' : 'rgba(255,255,255,0.05)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: '1rem', marginLeft: '4px',
             }}
@@ -225,11 +225,11 @@ export default function Navbar() {
           aria-expanded={menuOpen}
           style={{
             background: 'none',
-            border: '1px solid rgba(255,255,255,0.1)',
+            border: isLight ? '1px solid rgba(99,102,241,0.2)' : '1px solid rgba(255,255,255,0.1)',
             borderRadius: '8px',
             padding: '8px',
             cursor: 'pointer',
-            color: '#94a3b8',
+            color: isLight ? '#475569' : '#94a3b8',
             display: 'none',
           }}
           className="mobile-menu-btn"
@@ -307,7 +307,7 @@ export default function Navbar() {
       </AnimatePresence>
 
       {/* Scroll Progress Bar */}
-      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: 'rgba(255,255,255,0.06)' }}>
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: '2px', background: isLight ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.06)' }}>
         <motion.div
           style={{
             height: '100%',

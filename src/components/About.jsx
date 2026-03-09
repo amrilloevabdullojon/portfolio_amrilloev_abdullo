@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { personalInfo } from '../data/portfolio';
 import { useLang } from '../context/LangContext';
+import { useTheme } from '../context/ThemeContext';
 
 function useCounter(target, active, duration = 1200) {
   const [count, setCount] = useState(0);
@@ -43,7 +44,7 @@ const fadeUp = {
 
 const traitIcons = ['🚀', '🎨', '🤝', '📚'];
 
-function StatCard({ stat, isInView }) {
+function StatCard({ stat, isInView, isLight }) {
   const suffix = stat.value.replace(/[0-9]/g, '');
   const count = useCounter(stat.value, isInView);
   return (
@@ -52,16 +53,7 @@ function StatCard({ stat, isInView }) {
       className="glass-card"
       style={{ padding: '16px 8px', textAlign: 'center', cursor: 'default', transition: 'box-shadow 0.3s ease' }}
     >
-      <div
-        style={{
-          fontSize: '1.5rem',
-          fontWeight: 800,
-          background: 'linear-gradient(135deg, #6366f1, #a78bfa)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          backgroundClip: 'text',
-        }}
-      >
+      <div style={{ fontSize: '1.5rem', fontWeight: 800, color: isLight ? '#4f46e5' : '#a5b4fc' }}>
         {count}{suffix}
       </div>
       <div style={{ color: '#64748b', fontSize: '0.7rem', marginTop: '4px' }}>{stat.label}</div>
@@ -73,6 +65,8 @@ export default function About() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
   const { t } = useLang();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   return (
     <section id="about" className="section-padding" ref={ref}>
@@ -154,7 +148,7 @@ export default function About() {
               </div>
 
               <div style={{ textAlign: 'center' }}>
-                <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: 'white', marginBottom: '4px' }}>
+                <h3 style={{ fontSize: '1.3rem', fontWeight: 700, color: isLight ? '#1e293b' : 'white', marginBottom: '4px' }}>
                   {personalInfo.name}
                 </h3>
                 <p style={{ color: '#8b5cf6', fontSize: '0.9rem', fontFamily: '"JetBrains Mono", monospace' }}>
@@ -191,7 +185,7 @@ export default function About() {
               }}
             >
               {personalInfo.stats.map((stat) => (
-                <StatCard key={stat.label} stat={stat} isInView={isInView} />
+                <StatCard key={stat.label} stat={stat} isInView={isInView} isLight={isLight} />
               ))}
             </div>
 
@@ -223,7 +217,7 @@ export default function About() {
               }}
             >
               <img
-                src={`https://github-readme-stats.vercel.app/api?username=amrilloevabdullojon&show_icons=true&theme=tokyonight&bg_color=0d0d18&border_color=6366f100&title_color=a78bfa&icon_color=6366f1&text_color=94a3b8&hide_border=true`}
+                src={`https://github-readme-stats.vercel.app/api?username=amrilloevabdullojon&show_icons=true&hide_border=true&${isLight ? 'theme=default&bg_color=00000000&title_color=4f46e5&icon_color=6366f1&text_color=475569' : 'theme=tokyonight&bg_color=0d0d18&title_color=a78bfa&icon_color=6366f1&text_color=94a3b8'}`}
                 alt="GitHub Stats"
                 style={{ width: '100%', display: 'block' }}
                 onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -251,14 +245,14 @@ export default function About() {
               >
                 {t.about.tag}
               </p>
-              <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', fontWeight: 700, color: 'white', lineHeight: 1.2 }}>
+              <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.5rem)', fontWeight: 700, color: isLight ? '#1e293b' : 'white', lineHeight: 1.2 }}>
                 {t.about.heading}{' '}
                 <span style={{ color: '#8b5cf6' }}>{t.about.heading2}</span>{' '}
                 {t.about.heading3}
               </h2>
             </div>
 
-            <p style={{ color: '#94a3b8', lineHeight: 1.8, fontSize: '1rem' }}>
+            <p style={{ color: isLight ? '#475569' : '#94a3b8', lineHeight: 1.8, fontSize: '1rem' }}>
               {personalInfo.bio}
             </p>
 
@@ -284,7 +278,7 @@ export default function About() {
                   }}
                 >
                   <span style={{ fontSize: '1.2rem' }}>{traitIcons[i]}</span>
-                  <span style={{ color: '#cbd5e1', fontSize: '0.95rem' }}>{label}</span>
+                  <span style={{ color: isLight ? '#475569' : '#cbd5e1', fontSize: '0.95rem' }}>{label}</span>
                 </motion.div>
               ))}
             </motion.div>
@@ -320,23 +314,23 @@ export default function About() {
                   gap: '8px',
                   padding: '12px 24px',
                   borderRadius: '12px',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                  color: '#94a3b8',
+                  border: isLight ? '1px solid rgba(99,102,241,0.25)' : '1px solid rgba(255,255,255,0.12)',
+                  color: isLight ? '#475569' : '#94a3b8',
                   textDecoration: 'none',
                   fontSize: '0.9rem',
                   fontWeight: 600,
-                  background: 'rgba(255,255,255,0.04)',
+                  background: isLight ? 'rgba(99,102,241,0.05)' : 'rgba(255,255,255,0.04)',
                   transition: 'all 0.2s ease',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = 'rgba(99,102,241,0.5)';
-                  e.currentTarget.style.color = '#a5b4fc';
-                  e.currentTarget.style.background = 'rgba(99,102,241,0.08)';
+                  e.currentTarget.style.color = isLight ? '#4f46e5' : '#a5b4fc';
+                  e.currentTarget.style.background = 'rgba(99,102,241,0.1)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)';
-                  e.currentTarget.style.color = '#94a3b8';
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+                  e.currentTarget.style.borderColor = isLight ? 'rgba(99,102,241,0.25)' : 'rgba(255,255,255,0.12)';
+                  e.currentTarget.style.color = isLight ? '#475569' : '#94a3b8';
+                  e.currentTarget.style.background = isLight ? 'rgba(99,102,241,0.05)' : 'rgba(255,255,255,0.04)';
                 }}
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

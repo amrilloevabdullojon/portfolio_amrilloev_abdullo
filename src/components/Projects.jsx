@@ -306,7 +306,7 @@ export default function Projects() {
                   ...filterBtnBase,
                   border: `1px solid ${active ? 'rgba(99,102,241,0.7)' : isLight ? 'rgba(99,102,241,0.2)' : 'rgba(255,255,255,0.1)'}`,
                   background: active ? 'rgba(99,102,241,0.2)' : isLight ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.04)',
-                  color: active ? '#a5b4fc' : isLight ? '#475569' : '#64748b',
+                  color: active ? (isLight ? '#4f46e5' : '#a5b4fc') : isLight ? '#475569' : '#64748b',
                   boxShadow: active ? '0 0 12px rgba(99,102,241,0.25)' : 'none',
                 }}
               >
@@ -340,8 +340,10 @@ export default function Projects() {
                 onClick={() => setTechFilter(null)}
                 style={{
                   marginTop: '16px', padding: '8px 20px', borderRadius: '50px',
-                  border: '1px solid rgba(99,102,241,0.4)', background: 'rgba(99,102,241,0.1)',
-                  color: '#a5b4fc', fontSize: '0.85rem', fontFamily: '"JetBrains Mono", monospace',
+                  border: '1px solid rgba(99,102,241,0.4)',
+                  background: isLight ? 'rgba(99,102,241,0.08)' : 'rgba(99,102,241,0.1)',
+                  color: isLight ? '#4f46e5' : '#a5b4fc',
+                  fontSize: '0.85rem', fontFamily: '"JetBrains Mono", monospace',
                   fontWeight: 600, cursor: 'pointer',
                 }}
               >
