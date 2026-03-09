@@ -1,8 +1,42 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { personalInfo } from '../data/portfolio';
 import { useLang } from '../context/LangContext';
 import { useTheme } from '../context/ThemeContext';
+
+function GitHubStatsImage({ src, isLight }) {
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
+  const handleLoad = useCallback(() => setLoaded(true), []);
+  const handleError = useCallback(() => setError(true), []);
+  if (error) return null;
+  return (
+    <div style={{ position: 'relative', width: '100%', minHeight: loaded ? 0 : '130px' }}>
+      {!loaded && (
+        <div style={{
+          position: loaded ? 'absolute' : 'relative',
+          width: '100%',
+          height: '130px',
+          borderRadius: '8px',
+          background: isLight
+            ? 'linear-gradient(90deg, #e8eaf6 25%, #c5cae9 50%, #e8eaf6 75%)'
+            : 'linear-gradient(90deg, #1a1a2e 25%, #252540 50%, #1a1a2e 75%)',
+          backgroundSize: '200% 100%',
+          animation: 'shimmer 1.5s infinite',
+        }} />
+      )}
+      <img
+        src={src}
+        alt="GitHub Stats"
+        loading="lazy"
+        style={{ width: '100%', display: loaded ? 'block' : 'none' }}
+        onLoad={handleLoad}
+        onError={handleError}
+      />
+      <style>{`@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }`}</style>
+    </div>
+  );
+}
 
 function useCounter(target, active, duration = 1200) {
   const [count, setCount] = useState(0);
@@ -216,11 +250,9 @@ export default function About() {
                 e.currentTarget.style.boxShadow = 'none';
               }}
             >
-              <img
+              <GitHubStatsImage
+                isLight={isLight}
                 src={`https://github-readme-stats.vercel.app/api?username=amrilloevabdullojon&show_icons=true&hide_border=true&${isLight ? 'theme=default&bg_color=00000000&title_color=4f46e5&icon_color=6366f1&text_color=475569' : 'theme=tokyonight&bg_color=0d0d18&title_color=a78bfa&icon_color=6366f1&text_color=94a3b8'}`}
-                alt="GitHub Stats"
-                style={{ width: '100%', display: 'block' }}
-                onError={(e) => { e.currentTarget.style.display = 'none'; }}
               />
             </motion.a>
           </motion.div>

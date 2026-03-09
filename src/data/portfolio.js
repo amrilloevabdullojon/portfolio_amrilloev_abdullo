@@ -115,8 +115,8 @@ export const projects = [
     description:
       'Full-featured e-commerce app with authentication, product catalog, shopping cart, payment integration and admin dashboard.',
     tech: ['React', 'Node.js', 'PostgreSQL', 'Stripe'],
-    github: '#',
-    live: '#',
+    github: 'https://github.com/amrilloevabdullojon',
+    live: '',
     gradient: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)',
     emoji: '🛍️',
   },
@@ -126,8 +126,8 @@ export const projects = [
     description:
       'Collaborative project management tool with real-time updates, drag-and-drop boards, team workspaces and progress tracking.',
     tech: ['React', 'Socket.io', 'MongoDB', 'Express'],
-    github: '#',
-    live: '#',
+    github: 'https://github.com/amrilloevabdullojon',
+    live: '',
     gradient: 'linear-gradient(135deg, #06b6d4 0%, #6366f1 100%)',
     emoji: '📋',
   },
@@ -137,8 +137,8 @@ export const projects = [
     description:
       'Content management system with rich text editor, SEO optimisation, media uploads, multi-author support and analytics.',
     tech: ['Next.js', 'Django', 'PostgreSQL', 'AWS S3'],
-    github: '#',
-    live: '#',
+    github: 'https://github.com/amrilloevabdullojon',
+    live: '',
     gradient: 'linear-gradient(135deg, #f59e0b 0%, #ef4444 100%)',
     emoji: '✍️',
   },
@@ -148,8 +148,8 @@ export const projects = [
     description:
       'Messenger with end-to-end encryption, group chats, file sharing, voice messages and online status indicators.',
     tech: ['React', 'Node.js', 'Socket.io', 'Redis'],
-    github: '#',
-    live: '#',
+    github: 'https://github.com/amrilloevabdullojon',
+    live: '',
     gradient: 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)',
     emoji: '💬',
   },
@@ -159,8 +159,8 @@ export const projects = [
     description:
       'Business intelligence dashboard with interactive charts, custom reports, data export and real-time KPI monitoring.',
     tech: ['React', 'Python', 'FastAPI', 'PostgreSQL'],
-    github: '#',
-    live: '#',
+    github: 'https://github.com/amrilloevabdullojon',
+    live: '',
     gradient: 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)',
     emoji: '📊',
   },
@@ -170,9 +170,36 @@ export const projects = [
     description:
       'RESTful API for fitness tracking with workout logging, progress analytics, nutrition tracking and social features.',
     tech: ['Django', 'PostgreSQL', 'Redis', 'Docker'],
-    github: '#',
-    live: '#',
+    github: 'https://github.com/amrilloevabdullojon',
+    live: '',
     gradient: 'linear-gradient(135deg, #f97316 0%, #eab308 100%)',
     emoji: '💪',
+  },
+];
+
+export const testimonials = [
+  {
+    id: 1,
+    name: 'Alex Johnson',
+    role: 'CTO, TechStart',
+    avatar: '👨‍💼',
+    text: 'Panda Fist delivered our platform ahead of schedule with exceptional code quality. His React expertise and attention to detail are outstanding.',
+    rating: 5,
+  },
+  {
+    id: 2,
+    name: 'Maria Santos',
+    role: 'Product Manager, DevCorp',
+    avatar: '👩‍💻',
+    text: 'Working with him was a pleasure. He understood requirements instantly, communicated proactively, and the final product exceeded expectations.',
+    rating: 5,
+  },
+  {
+    id: 3,
+    name: 'Daniel Kim',
+    role: 'Founder, Startup Hub',
+    avatar: '🧑‍🚀',
+    text: 'Incredible full-stack skills. Built our entire backend API in Node.js and PostgreSQL from scratch. Clean, documented, and scalable code.',
+    rating: 5,
   },
 ];

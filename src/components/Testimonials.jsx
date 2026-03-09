@@ -6,33 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/pagination';
-
-const testimonials = [
-  {
-    id: 1,
-    name: 'Alex Johnson',
-    role: 'CTO, TechStart',
-    avatar: '👨‍💼',
-    text: 'Panda Fist delivered our platform ahead of schedule with exceptional code quality. His React expertise and attention to detail are outstanding.',
-    rating: 5,
-  },
-  {
-    id: 2,
-    name: 'Maria Santos',
-    role: 'Product Manager, DevCorp',
-    avatar: '👩‍💻',
-    text: 'Working with him was a pleasure. He understood requirements instantly, communicated proactively, and the final product exceeded expectations.',
-    rating: 5,
-  },
-  {
-    id: 3,
-    name: 'Daniel Kim',
-    role: 'Founder, Startup Hub',
-    avatar: '🧑‍🚀',
-    text: 'Incredible full-stack skills. Built our entire backend API in Node.js and PostgreSQL from scratch. Clean, documented, and scalable code.',
-    rating: 5,
-  },
-];
+import { testimonials } from '../data/portfolio';
 
 function Stars({ count }) {
   return (
@@ -109,6 +83,7 @@ export default function Testimonials() {
             modules={[Autoplay, Pagination]}
             slidesPerView={1}
             spaceBetween={16}
+            grabCursor
             pagination={{ clickable: true }}
             autoplay={{ delay: 4000, pauseOnMouseEnter: true, disableOnInteraction: false }}
             style={{ paddingBottom: '40px' }}

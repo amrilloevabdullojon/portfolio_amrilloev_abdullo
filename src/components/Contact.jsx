@@ -154,6 +154,11 @@ export default function Contact() {
           },
           publicKey
         );
+      } else {
+        // Fallback: open mail client pre-filled
+        const subject = encodeURIComponent(`Portfolio contact from ${formData.name}`);
+        const body = encodeURIComponent(`From: ${formData.name} <${formData.email}>\n\n${formData.message}`);
+        window.open(`mailto:${personalInfo.email}?subject=${subject}&body=${body}`, '_blank');
       }
 
       showToast(t.contact.sent, 'success');
@@ -223,7 +228,7 @@ export default function Contact() {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.7 }}
           >
-            <h3 style={{ color: 'white', fontSize: '1.3rem', fontWeight: 700, marginBottom: '8px' }}>
+            <h3 style={{ color: isLight ? '#1e293b' : 'white', fontSize: '1.3rem', fontWeight: 700, marginBottom: '8px' }}>
               {t.contact.connect}
             </h3>
             <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '28px', lineHeight: 1.6 }}>
@@ -255,7 +260,7 @@ export default function Contact() {
                 >
                   <div style={{ color: link.color }}>{link.icon}</div>
                   <div>
-                    <div style={{ color: 'white', fontWeight: 600, fontSize: '0.9rem' }}>{link.label}</div>
+                    <div style={{ color: isLight ? '#1e293b' : 'white', fontWeight: 600, fontSize: '0.9rem' }}>{link.label}</div>
                     <div style={{ color: '#64748b', fontSize: '0.75rem', marginTop: '2px' }}>{link.description}</div>
                   </div>
                 </motion.a>
@@ -315,21 +320,21 @@ export default function Contact() {
             className="glass-card"
             style={{ padding: '36px' }}
           >
-            <h3 style={{ color: 'white', fontSize: '1.2rem', fontWeight: 700, marginBottom: '24px' }}>
+            <h3 style={{ color: isLight ? '#1e293b' : 'white', fontSize: '1.2rem', fontWeight: 700, marginBottom: '24px' }}>
               {t.contact.form_title}
             </h3>
 
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }} noValidate>
               {/* Name */}
               <div>
-                <label style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
+                <label htmlFor="contact-name" style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
                   {t.contact.name}
                 </label>
                 <input
+                  id="contact-name"
                   type="text"
                   style={inputStyle('name')}
                   placeholder="John Doe"
-                  aria-label="Your name"
                   value={formData.name}
                   onChange={(e) => handleChange('name', e.target.value)}
                   onBlur={() => handleBlur('name')}
@@ -342,14 +347,14 @@ export default function Contact() {
 
               {/* Email */}
               <div>
-                <label style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
+                <label htmlFor="contact-email" style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
                   {t.contact.email}
                 </label>
                 <input
+                  id="contact-email"
                   type="email"
                   style={inputStyle('email')}
                   placeholder="john@example.com"
-                  aria-label="Email address"
                   value={formData.email}
                   onChange={(e) => handleChange('email', e.target.value)}
                   onBlur={() => handleBlur('email')}
@@ -360,15 +365,17 @@ export default function Contact() {
                 )}
               </div>
 
-              {/* {t.contact.message} */}
+              {/* Message */}
               <div>
-                <label style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
+                <label htmlFor="contact-message" style={{ color: '#94a3b8', fontSize: '0.8rem', display: 'block', marginBottom: '6px' }}>
                   {t.contact.message}
                 </label>
                 <textarea
+                  id="contact-message"
                   style={{ ...inputStyle('message'), resize: 'vertical', minHeight: '120px' }}
                   placeholder="Tell me about your project..."
                   rows={5}
+                  maxLength={500}
                   value={formData.message}
                   onChange={(e) => handleChange('message', e.target.value)}
                   onBlur={() => handleBlur('message')}

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 const COLORS = ['#6366f1', '#8b5cf6', '#a78bfa', '#c4b5fd'];
 const LINK_DISTANCE = 140;
+const MAX_LINKS_PER_PARTICLE = 4; // cap links per particle, keeps render O(n * MAX_LINKS)
 const REPULSE_RADIUS = 90;
 const REPULSE_FORCE = 3.5;
 
@@ -96,15 +97,21 @@ export default function ParticleCanvas({ count = 70 }) {
         p.y = Math.max(0, Math.min(h, p.y));
       }
 
-      // Draw links
+      // Draw links — capped per particle to avoid O(n²) cost
+      const linkCounts = new Array(particles.length).fill(0);
       for (let i = 0; i < particles.length; i++) {
+        if (linkCounts[i] >= MAX_LINKS_PER_PARTICLE) continue;
         for (let j = i + 1; j < particles.length; j++) {
+          if (linkCounts[i] >= MAX_LINKS_PER_PARTICLE) break;
+          if (linkCounts[j] >= MAX_LINKS_PER_PARTICLE) continue;
           const a = particles[i];
           const b = particles[j];
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const d = Math.sqrt(dx * dx + dy * dy);
           if (d < LINK_DISTANCE) {
+            linkCounts[i]++;
+            linkCounts[j]++;
             const alpha = (1 - d / LINK_DISTANCE) * 0.18;
             ctx.beginPath();
             ctx.strokeStyle = `rgba(99,102,241,${alpha})`;

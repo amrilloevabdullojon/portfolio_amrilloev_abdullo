@@ -373,6 +373,7 @@ export default function Projects() {
                 onSlideChange={(s) => setSlideIndex(s.realIndex)}
                 modules={[Autoplay, Pagination, Navigation, Keyboard]}
                 grabCursor
+                style={{ cursor: 'grab' }}
                 centeredSlides
                 keyboard={{ enabled: true }}
                 autoplay={{ delay: 4000, disableOnInteraction: false, pauseOnMouseEnter: true }}

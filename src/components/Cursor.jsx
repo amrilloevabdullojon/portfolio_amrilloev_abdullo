@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
-const MAX_TRAIL = 10;
-const TRAIL_TTL = 350; // ms
+const MAX_TRAIL = 6;
+const TRAIL_TTL = 220; // ms
 
 export default function Cursor() {
   const dotRef = useRef(null);
