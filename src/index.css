@@ -389,3 +389,19 @@ html.light section:nth-child(even) {
   background: rgba(99, 102, 241, 0.3);
   color: white;
 }
+
+/* ── View Transition — clip-path circle reveal ───── */
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-old(root) { animation: none; }
+  ::view-transition-new(root) { animation: theme-reveal 0.45s ease-out; }
+  @keyframes theme-reveal {
+    from { clip-path: circle(0px at var(--theme-x, 50%) var(--theme-y, 50%)); }
+    to   { clip-path: circle(var(--theme-radius, 150vmax) at var(--theme-x, 50%) var(--theme-y, 50%)); }
+  }
+}
+
+/* ── Available badge pulse ───────────────────────── */
+@keyframes pulse-green {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+  50%       { box-shadow: 0 0 0 4px rgba(16,185,129,0); }
+}

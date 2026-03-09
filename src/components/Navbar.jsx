@@ -89,7 +89,7 @@ export default function Navbar() {
     >
       <div style={{ maxWidth: '1280px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {/* Logo */}
-        <a href="#hero" onClick={(e) => handleNavClick(e, '#hero')} style={{ textDecoration: 'none' }}>
+        <a href="#hero" onClick={(e) => handleNavClick(e, '#hero')} style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <motion.div
             whileHover={{ scale: 1.05 }}
             style={{
@@ -104,6 +104,11 @@ export default function Navbar() {
           >
             {'<PF />'}
           </motion.div>
+          {/* Available badge */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '3px 8px', borderRadius: '999px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)' }}>
+            <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', animation: 'pulse-green 1.8s ease infinite', flexShrink: 0 }} />
+            <span style={{ fontSize: '0.68rem', fontWeight: 600, color: '#10b981', fontFamily: '"JetBrains Mono", monospace', whiteSpace: 'nowrap' }}>available</span>
+          </div>
         </a>
 
         {/* Desktop Links */}
@@ -193,7 +198,10 @@ export default function Navbar() {
           <motion.button
             whileHover={{ scale: 1.1, rotate: 15 }}
             whileTap={{ scale: 0.9 }}
-            onClick={toggleTheme}
+            onClick={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              toggleTheme(rect.left + rect.width / 2, rect.top + rect.height / 2);
+            }}
             aria-label={theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
             style={{
               width: '34px', height: '34px', borderRadius: '8px',

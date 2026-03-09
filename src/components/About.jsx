@@ -108,6 +108,22 @@ export default function About() {
   const { t } = useLang();
   const { theme } = useTheme();
   const isLight = theme === 'light';
+  const avatarRef = useRef(null);
+
+  const handleAvatarMove = (e) => {
+    const el = avatarRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left - rect.width / 2;
+    const y = e.clientY - rect.top - rect.height / 2;
+    const rx = (-y / rect.height) * 12;
+    const ry = (x / rect.width) * 12;
+    el.style.transform = `perspective(800px) rotateX(${rx}deg) rotateY(${ry}deg) scale(1.03)`;
+  };
+
+  const handleAvatarLeave = () => {
+    if (avatarRef.current) avatarRef.current.style.transform = 'perspective(800px) rotateX(0) rotateY(0) scale(1)';
+  };
 
   return (
     <section id="about" className="section-padding" ref={ref}>
@@ -141,6 +157,9 @@ export default function About() {
           >
             {/* Avatar Card */}
             <div
+              ref={avatarRef}
+              onMouseMove={handleAvatarMove}
+              onMouseLeave={handleAvatarLeave}
               className="glass-card"
               style={{
                 padding: '40px',
@@ -152,6 +171,8 @@ export default function About() {
                 maxWidth: '340px',
                 position: 'relative',
                 overflow: 'hidden',
+                transition: 'transform 0.15s ease',
+                transformStyle: 'preserve-3d',
               }}
             >
               {/* Glow accent */}

@@ -9,6 +9,13 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { projects } from '../data/portfolio';
 
+/* ─── Tech usage counts (computed once at module level) ─── */
+const TECH_COUNTS = (() => {
+  const counts = {};
+  projects.forEach((p) => p.tech.forEach((t) => { counts[t] = (counts[t] || 0) + 1; }));
+  return counts;
+})();
+
 /* ─── GitHub icon ─── */
 const GitHubIcon = () => (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
@@ -131,6 +138,7 @@ function ProjectCard({ project, tComingSoon, isLight }) {
           {project.tech.map((tech) => (
             <span
               key={tech}
+              title={`Used in ${TECH_COUNTS[tech] || 1} project${(TECH_COUNTS[tech] || 1) > 1 ? 's' : ''}`}
               style={{
                 padding: '3px 9px',
                 borderRadius: '4px',
@@ -140,6 +148,7 @@ function ProjectCard({ project, tComingSoon, isLight }) {
                 fontSize: '0.7rem',
                 fontFamily: '"JetBrains Mono", monospace',
                 fontWeight: 600,
+                cursor: 'default',
               }}
             >
               {tech}
