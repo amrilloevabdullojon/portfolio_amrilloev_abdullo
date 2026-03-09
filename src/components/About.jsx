@@ -252,7 +252,7 @@ export default function About() {
             >
               <GitHubStatsImage
                 isLight={isLight}
-                src={`https://github-readme-stats.vercel.app/api?username=amrilloevabdullojon&show_icons=true&hide_border=true&${isLight ? 'theme=default&bg_color=00000000&title_color=4f46e5&icon_color=6366f1&text_color=475569' : 'theme=tokyonight&bg_color=0d0d18&title_color=a78bfa&icon_color=6366f1&text_color=94a3b8'}`}
+                src={`https://github-readme-stats.vercel.app/api?username=amrilloevabdullojon&show_icons=true&hide_border=true&${isLight ? 'bg_color=f8faff&title_color=4f46e5&icon_color=6366f1&text_color=475569' : 'theme=tokyonight&bg_color=0d0d18&title_color=a78bfa&icon_color=6366f1&text_color=94a3b8'}`}
               />
             </motion.a>
           </motion.div>
