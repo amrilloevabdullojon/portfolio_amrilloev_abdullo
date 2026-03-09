@@ -33,35 +33,32 @@ export default function Navbar() {
   const linkActiveColor = isLight ? '#4f46e5' : '#a5b4fc';
 
   useEffect(() => {
+    const sectionIds = navHrefs.map((h) => h.slice(1));
+
+    const updateActive = () => {
+      const scrollY = window.scrollY;
+      // Find the last section whose top edge is at or above the middle of the viewport
+      const offset = window.innerHeight * 0.4;
+      let current = sectionIds[0];
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top - offset <= 0) {
+          current = id;
+        }
+      }
+      setActiveSection(current);
+    };
+
     const handler = () => {
       setScrolled(window.scrollY > 50);
       const total = document.documentElement.scrollHeight - window.innerHeight;
       setProgress(total > 0 ? window.scrollY / total : 0);
+      updateActive();
     };
+
     window.addEventListener('scroll', handler, { passive: true });
+    updateActive(); // set correct section on mount
     return () => window.removeEventListener('scroll', handler);
-  }, []);
-
-  // Track active section via IntersectionObserver
-  // Use navHrefs (module-level constant) to avoid stale closure on lang switch
-  useEffect(() => {
-    const sectionIds = navHrefs.map((h) => h.slice(1));
-    const observers = [];
-
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActiveSection(id);
-        },
-        { threshold: 0, rootMargin: '-10% 0px -85% 0px' }
-      );
-      obs.observe(el);
-      observers.push(obs);
-    });
-
-    return () => observers.forEach((o) => o.disconnect());
   }, []);
 
   const handleNavClick = (e, href) => {
