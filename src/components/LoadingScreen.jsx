@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTheme } from '../context/ThemeContext';
 
 export default function LoadingScreen() {
   const [done, setDone] = useState(false);
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   useEffect(() => {
     const t = setTimeout(() => setDone(true), 1800);
@@ -18,7 +21,7 @@ export default function LoadingScreen() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: '#0a0a0f',
+            background: isLight ? '#f1f5fb' : '#0a0a0f',
             zIndex: 99999,
             display: 'flex',
             flexDirection: 'column',
@@ -50,7 +53,7 @@ export default function LoadingScreen() {
             style={{
               width: '180px',
               height: '2px',
-              background: 'rgba(255,255,255,0.08)',
+              background: isLight ? 'rgba(99,102,241,0.12)' : 'rgba(255,255,255,0.08)',
               borderRadius: '2px',
               overflow: 'hidden',
             }}

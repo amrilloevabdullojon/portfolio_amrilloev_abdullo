@@ -1,9 +1,12 @@
 import { personalInfo } from '../data/portfolio';
 import { useLang } from '../context/LangContext';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Footer() {
   const year = new Date().getFullYear();
   const { t } = useLang();
+  const { theme } = useTheme();
+  const isLight = theme === 'light';
 
   const handleNavClick = (href) => {
     const el = document.querySelector(href);
@@ -13,10 +16,10 @@ export default function Footer() {
   return (
     <footer
       style={{
-        borderTop: '1px solid rgba(255,255,255,0.06)',
+        borderTop: isLight ? '1px solid rgba(99,102,241,0.15)' : '1px solid rgba(255,255,255,0.06)',
         padding: '40px 24px',
         textAlign: 'center',
-        background: '#080810',
+        background: isLight ? '#eef2ff' : '#080810',
       }}
     >
       <div style={{ maxWidth: '800px', margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
