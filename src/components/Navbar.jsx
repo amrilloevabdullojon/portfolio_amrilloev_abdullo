@@ -55,7 +55,7 @@ export default function Navbar() {
         ([entry]) => {
           if (entry.isIntersecting) setActiveSection(id);
         },
-        { threshold: 0.35 }
+        { threshold: 0, rootMargin: '-10% 0px -85% 0px' }
       );
       obs.observe(el);
       observers.push(obs);
